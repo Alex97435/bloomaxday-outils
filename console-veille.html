@@ -1,0 +1,114 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Veille appels d'offres — formation</title>
+<style>
+:root{color-scheme:light;--bg:#F6F8FD;--s2:#EDF1FA;--s3:#DCE5F6;--line:#DCE3F1;--card:#fff;--ink:#27314E;--ink2:#556080;--muted:#8792AC;--acc:#4E6FB5;--accSoft:#E7EDFA;--accPale:#C9D7F2;--go:#3F7F63;--goBg:#DFF0E7;--hold:#9A6B1E;--holdBg:#F7ECD7;--stop:#99505A;--stopBg:#F6E4E6;--r:14px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink2);font-family:Inter,-apple-system,"Segoe UI",Arial,sans-serif;line-height:1.5}
+.wrap{max-width:1500px;margin:0 auto;padding:28px 16px 80px}
+header{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
+.k{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--acc);margin:0 0 6px}
+h1{font-size:34px;font-weight:800;letter-spacing:-.6px;color:var(--ink);margin:0}
+.sub{font-size:14px;color:var(--muted);margin:6px 0 0}
+button{font-family:inherit;font-size:14px;font-weight:600;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 16px;cursor:pointer}
+button:hover{border-color:var(--accPale);background:var(--accSoft)}button.pri{background:var(--acc);border-color:var(--acc);color:#fff}button.pri:hover{background:#41609f}
+button:disabled{opacity:.5;cursor:wait}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ctl{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:16px;align-items:end}
+label{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
+input,select{font-family:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px;width:100%}
+.status{font-size:13px;color:var(--muted);margin:0 0 14px;min-height:20px}
+.status b{color:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.tile{background:var(--s2);border-radius:11px;padding:13px 15px}.tile b{display:block;font-size:26px;font-weight:800;color:var(--ink);line-height:1.1}.tile span{font-size:12px;color:var(--muted);font-weight:600}
+.list{display:flex;flex-direction:column;gap:10px}
+.av{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:grid;grid-template-columns:90px 1fr auto;gap:16px;align-items:start}
+.av.top{border-color:var(--accPale);background:#FBFCFF}
+.score{text-align:center}.score b{display:block;font-size:30px;font-weight:800;color:var(--ink);line-height:1}.score span{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted)}
+.av h3{margin:0 0 4px;font-size:16px;color:var(--ink);line-height:1.3}
+.meta{font-size:13px;color:var(--ink2);display:flex;flex-wrap:wrap;gap:6px 14px;margin-bottom:6px}
+.why{font-size:12px;color:var(--muted)}
+.why em{font-style:normal;background:var(--accSoft);color:var(--acc);border-radius:6px;padding:1px 6px;margin-right:4px}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;border-radius:999px;padding:3px 9px}
+.p-go{background:var(--goBg);color:var(--go)}.p-hold{background:var(--holdBg);color:var(--hold)}.p-stop{background:var(--stopBg);color:var(--stop)}.p-fic{background:var(--stopBg);color:var(--stop)}
+.acts{display:flex;flex-direction:column;gap:6px}.acts button{font-size:12px;padding:7px 10px}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:var(--r);padding:30px;text-align:center;color:var(--muted)}
+pre{background:var(--s2);border:1px solid var(--line);border-radius:11px;padding:14px;font-size:12px;line-height:1.5;white-space:pre-wrap;word-break:break-word;max-height:360px;overflow:auto;font-family:ui-monospace,Menlo,monospace}
+.modal{position:fixed;inset:0;background:rgba(39,49,78,.35);display:none;align-items:center;justify-content:center;padding:20px}
+.modal.on{display:flex}.box{background:var(--card);border-radius:16px;padding:22px;max-width:900px;width:100%;max-height:90vh;overflow:auto}
+.foot{margin-top:28px;font-size:12px;color:var(--muted);text-align:center}
+@media(max-width:900px){.ctl{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.av{grid-template-columns:70px 1fr}.acts{grid-column:1/-1;flex-direction:row;flex-wrap:wrap}}
+</style></head><body><div class="wrap">
+<header>
+ <div><p class="k">BloomaxDay · Bloc 2 · générer du chiffre d'affaires</p><h1>Veille appels d'offres — formation</h1><p class="sub">Interroge en direct les avis publiés au BOAMP (données ouvertes), les filtre, les note selon votre profil, et prépare la qualification par l'agent.</p></div>
+ <div class="bar"><button id="bDemo">Mode hors ligne (exemples fictifs)</button><button id="bJson">Exporter JSON</button></div>
+</header>
+<div class="ctl">
+ <div><label>Mots recherchés (plein texte)</label><input id="q" value='"formation" or "formateur"'></div>
+ <div><label>Depuis (jours)</label><input id="days" type="number" value="45" min="1" max="365"></div>
+ <div><label>Zone</label><select id="zone"><option value="all">Toute la France</option><option value="prio" selected>Zones prioritaires du profil</option></select></div>
+ <div><label>Score minimum</label><input id="min" type="number" value="3" min="0" max="30"></div>
+ <div><button class="pri" id="bGo">Lancer la veille</button></div>
+</div>
+<p class="status" id="st">Prêt. Source : boamp-datadila.opendatasoft.com — jeu de données « boamp », API Explore v2.1, sans clé.</p>
+<div class="stats"><div class="tile"><b id="s1">—</b><span>AVIS LUS</span></div><div class="tile"><b id="s2">—</b><span>RETENUS (SCORE ≥ MIN)</span></div><div class="tile"><b id="s3">—</b><span>DANS LA ZONE</span></div><div class="tile"><b id="s4">—</b><span>LIMITE &lt; 7 JOURS</span></div></div>
+<div class="list" id="list"><div class="empty">Clique « Lancer la veille ». Les avis apparaissent ici, classés par score.</div></div>
+<p class="foot">Les avis sont des données publiques du BOAMP. Le score est indicatif : il reflète votre profil (profil.json), pas la qualité du marché. La qualification se fait par l'agent, jamais par le score seul.</p>
+</div>
+<div class="modal" id="modal"><div class="box"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><b style="color:var(--ink);font-size:16px" id="mt">Commande</b><button id="mclose">Fermer</button></div><pre id="mpre"></pre><button class="pri" id="mcopy" style="margin-top:10px">Copier</button></div></div>
+<script>
+const PROFIL={
+ zones:["974","reunion","la reunion","saint-denis","saint-pierre","saint-paul","le port","mayotte","976"],bonusZone:5,
+ mots:{"formation":3,"formations":3,"formateur":2,"action de formation":3,"parcours de formation":3,"intelligence artificielle":4," ia ":4,"numerique":2,"bureautique":2,"digital":2,"qualiopi":2,"competences":1,"management":1,"accompagnement":1,"sensibilisation":1,"transition numerique":3,"outils collaboratifs":2},
+ excl:["travaux","fourniture de","nettoyage","gardiennage","restauration","vehicule","attribution"],joursMin:7};
+const API="https://boamp-datadila.opendatasoft.com/api/explore/v2.1/catalog/datasets/boamp/records";
+const DEMO=[
+ {FICTIF:true,objet:"Prestations de formation professionnelle des agents — parcours « compétences numériques et intelligence artificielle » (3 lots)",nomacheteur:"Commune de Sainte-Hélène-des-Hauts (fictive)",dateparution:"2026-10-07",datelimitereponse:"2026-10-30",type_marche:"Services",procedure_libelle:"Procédure adaptée",code_departement:["974"],url_avis:"#"},
+ {FICTIF:true,objet:"Accord-cadre de formation continue : bureautique, outils collaboratifs et sécurité numérique",nomacheteur:"Établissement public de coopération intercommunale du Littoral Est (fictif)",dateparution:"2026-10-02",datelimitereponse:"2026-11-14",type_marche:"Services",procedure_libelle:"Appel d'offres ouvert",code_departement:["974"],url_avis:"#"},
+ {FICTIF:true,objet:"Sensibilisation à l'intelligence artificielle générative et accompagnement au changement — encadrants",nomacheteur:"Chambre consulaire des Hauts (fictive)",dateparution:"2026-09-29",datelimitereponse:"2026-10-13",type_marche:"Services",procedure_libelle:"Procédure adaptée",code_departement:["974"],url_avis:"#"},
+ {FICTIF:true,objet:"Fourniture de mobilier de formation et travaux d'aménagement d'une salle",nomacheteur:"Lycée professionnel du Sud (fictif)",dateparution:"2026-10-01",datelimitereponse:"2026-10-28",type_marche:"Fournitures",procedure_libelle:"Procédure adaptée",code_departement:["974"],url_avis:"#"},
+ {FICTIF:true,objet:"Formation des équipes commerciales à la relation client et au management de proximité",nomacheteur:"Société d'économie mixte de transport (fictive)",dateparution:"2026-09-25",datelimitereponse:"2026-11-02",type_marche:"Services",procedure_libelle:"Procédure adaptée",code_departement:["33"],url_avis:"#"}
+];
+let RES=[];
+const $=id=>document.getElementById(id);
+const norm=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+function pick(r,names){for(const n of names){if(r[n]!=null&&r[n]!=="")return r[n]}for(const k of Object.keys(r)){const kk=k.toLowerCase();if(names.some(n=>kk.includes(n)))return r[k]}return""}
+function toStr(v){return Array.isArray(v)?v.join(", "):(typeof v==="object"&&v?JSON.stringify(v):String(v||""))}
+function normalize(raw){const r=raw.record?raw.record.fields||raw.record:(raw.fields||raw);return{
+ FICTIF:!!r.FICTIF,id:toStr(pick(r,["idweb","id"])),objet:toStr(pick(r,["objet","titre","title","intitule"])),acheteur:toStr(pick(r,["nomacheteur","acheteur","nom_acheteur","organisme"])),
+ parution:toStr(pick(r,["dateparution","date_parution","datepublication"])).slice(0,10),limite:toStr(pick(r,["datelimitereponse","date_limite","datelimite","deadline"])).slice(0,10),
+ type:toStr(pick(r,["type_marche","typemarche","nature"])),proc:toStr(pick(r,["procedure_libelle","procedure","type_procedure"])),dep:toStr(pick(r,["code_departement","departement","lieuexecution","lieu"])),
+ typeAvis:toStr(pick(r,["type_avis","famille_libelle","famille"])),url:toStr(pick(r,["url_avis","url","lien"])),desc:toStr(pick(r,["descripteur_libelle","descripteur","description","resume"])),raw:r}}
+function score(a){const txt=" "+norm(a.objet+" "+a.desc+" "+a.typeAvis)+" ";const why=[];let s=0;
+ for(const e of PROFIL.excl){if(txt.includes(norm(e))){return{s:-99,why:["exclu : "+e]}}}
+ for(const [m,w] of Object.entries(PROFIL.mots)){if(txt.includes(norm(m))){s+=w;why.push(m.trim()+" +"+w)}}
+ const z=norm(a.dep+" "+a.acheteur);const inZone=PROFIL.zones.some(x=>z.includes(norm(x)));if(inZone){s+=PROFIL.bonusZone;why.push("zone prioritaire +"+PROFIL.bonusZone)}
+ const d=daysTo(a.limite);if(d!==null){if(d<0){s-=10;why.push("limite dépassée −10")}else if(d<PROFIL.joursMin){s-=2;why.push("limite < "+PROFIL.joursMin+" j −2")}}
+ return{s,why,inZone,d}}
+function daysTo(iso){if(!iso)return null;const t=Date.parse(iso);if(isNaN(t))return null;return Math.round((t-Date.now())/86400000)}
+function pill(a){if(a.sc.s<0)return'<span class="pill p-stop">À écarter</span>';if(a.sc.d!==null&&a.sc.d<PROFIL.joursMin)return'<span class="pill p-hold">Délai court</span>';if(a.sc.s>=8)return'<span class="pill p-go">À qualifier</span>';return'<span class="pill p-hold">À regarder</span>'}
+function render(){const min=+$("min").value||0;const zone=$("zone").value;
+ let L=RES.map(a=>({...a,sc:score(a)})).filter(a=>a.sc.s>=min).filter(a=>zone==="all"||a.sc.inZone);
+ L.sort((x,y)=>y.sc.s-x.sc.s||(x.limite||"").localeCompare(y.limite||""));
+ $("s1").textContent=RES.length;$("s2").textContent=L.length;$("s3").textContent=RES.filter(a=>score(a).inZone).length;$("s4").textContent=L.filter(a=>a.sc.d!==null&&a.sc.d>=0&&a.sc.d<7).length;
+ const list=$("list");if(!L.length){list.innerHTML='<div class="empty">Aucun avis au-dessus du score minimum dans cette zone. Baisse le score, élargis la zone ou la période.</div>';return}
+ list.innerHTML=L.map((a,i)=>'<div class="av'+(i<3?" top":"")+'"><div class="score"><b>'+a.sc.s+'</b><span>score</span></div><div><h3>'+esc(a.objet||"(objet non renseigné)")+'</h3><div class="meta"><span><b>'+esc(a.acheteur)+'</b></span><span>Paru le '+esc(a.parution||"?")+'</span><span>Limite : <b>'+esc(a.limite||"non précisée")+'</b>'+(a.sc.d!==null?" ("+(a.sc.d>=0?"dans "+a.sc.d+" j":"dépassée")+")":"")+'</span><span>'+esc(a.type)+' · '+esc(a.proc)+'</span><span>Dép. '+esc(a.dep||"?")+'</span>'+(a.FICTIF?'<span class="pill p-fic">Exemple fictif</span>':"")+'</div><div class="why">'+pill(a)+' '+a.sc.why.map(w=>"<em>"+esc(w)+"</em>").join("")+'</div></div><div class="acts">'+(a.url&&a.url!=="#"?'<a href="'+esc(a.url)+'" target="_blank" rel="noopener"><button>Ouvrir l\'avis</button></a>':"")+'<button data-q="'+i+'">Qualifier avec l\'agent</button></div></div>').join("");
+ list.querySelectorAll("button[data-q]").forEach(b=>b.addEventListener("click",()=>openPrompt(L[+b.dataset.q])));}
+function esc(s){return String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function openPrompt(a){const t="Tu es l'analyste appels d'offres d'un organisme de formation à La Réunion (profil : certifié Qualiopi, spécialisé numérique, bureautique collaborative et IA générative, 4 formateurs, interventions en présentiel sur l'île).\n\nVoici un avis repéré par la veille :\n- Objet : "+a.objet+"\n- Acheteur : "+a.acheteur+"\n- Paru le : "+(a.parution||"non précisé")+"\n- Date limite : "+(a.limite||"non précisée")+"\n- Type / procédure : "+a.type+" / "+a.proc+"\n- Département : "+(a.dep||"non précisé")+"\n- Lien : "+(a.url||"non précisé")+"\n\nFais une pré-qualification en cinq points, sans introduction :\n1. CE QU'ON SAIT — uniquement ce que l'avis dit. N'invente rien ; marque « à vérifier dans le DCE » tout ce qui manque.\n2. ADÉQUATION AU PROFIL — forte / moyenne / faible, en trois lignes justifiées.\n3. TROIS QUESTIONS à trancher en lisant le règlement de consultation avant de décider (niveaux minimaux, références exigées, prix plafonds, présentiel).\n4. TEMPS ESTIMÉ pour produire une réponse complète, en jours-homme, et ce qu'il faudrait réunir.\n5. RECOMMANDATION — télécharger le DCE / écarter / surveiller — en un mot puis une phrase.\n\nSois direct. Aucun chiffre inventé."+(a.FICTIF?"\n\n(Avis FICTIF utilisé en démonstration hors ligne.)":"");
+ $("mt").textContent="Commande de qualification — "+(a.acheteur||"");$("mpre").textContent=t;$("modal").classList.add("on")}
+$("mclose").addEventListener("click",()=>$("modal").classList.remove("on"));
+$("mcopy").addEventListener("click",e=>{navigator.clipboard.writeText($("mpre").textContent).then(()=>{e.target.textContent="Copié";setTimeout(()=>e.target.textContent="Copier",1500)}).catch(()=>{e.target.textContent="Sélectionne et Cmd+C"})});
+async function run(){const b=$("bGo");b.disabled=true;$("st").innerHTML="Interrogation du BOAMP…";RES=[];
+ try{const q=$("q").value.trim()||'"formation"';const days=+$("days").value||45;const since=new Date(Date.now()-days*86400000).toISOString().slice(0,10);
+  let got=[],offset=0,pages=0;
+  while(pages<4){const u=API+"?where="+encodeURIComponent(q)+"&limit=100&offset="+offset;const r=await fetch(u,{headers:{"Accept":"application/json"}});
+   if(!r.ok){const tx=await r.text();throw new Error("HTTP "+r.status+" — "+tx.slice(0,300))}
+   const j=await r.json();const rows=j.results||j.records||[];got=got.concat(rows);if(rows.length<100)break;offset+=100;pages++}
+  RES=got.map(normalize).filter(a=>!a.parution||a.parution>=since).filter(a=>!norm(a.typeAvis).includes("attribution")&&!norm(a.typeAvis).includes("rectificatif"));
+  $("st").innerHTML="<b>"+got.length+"</b> avis reçus du BOAMP, <b>"+RES.length+"</b> parus depuis le "+since+" (hors attributions). Source : BOAMP, données ouvertes."}
+ catch(e){$("st").innerHTML="<b>Le BOAMP n'a pas répondu</b> ("+esc(e.message)+"). Vérifie la connexion, ou passe en mode hors ligne : exemples fictifs clairement marqués."}
+ render();b.disabled=false}
+$("bGo").addEventListener("click",run);
+$("bDemo").addEventListener("click",()=>{RES=DEMO.map(normalize);$("st").innerHTML="<b>Mode hors ligne.</b> Cinq avis FICTIFS, créés pour la démonstration. Aucun n'existe réellement.";render()});
+["min","zone"].forEach(id=>$(id).addEventListener("change",render));
+$("bJson").addEventListener("click",()=>{const blob=new Blob([JSON.stringify(RES.map(a=>({...a,raw:undefined,score:score(a)})),null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="veille-ao-formation.json";a.click()});
+</script></body></html>

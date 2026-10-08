@@ -1,0 +1,142 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exaspérations</title>
+<style>
+:root{color-scheme:light;--bg:#F6F8FD;--s2:#EDF1FA;--s3:#DCE5F6;--line:#DCE3F1;--card:#FFFFFF;--ink:#27314E;--ink2:#556080;--muted:#8792AC;--acc:#4E6FB5;--accSoft:#E7EDFA;--accPale:#C9D7F2;--go:#3F7F63;--goBg:#DFF0E7;--hold:#9A6B1E;--holdBg:#F7ECD7;--stop:#99505A;--stopBg:#F6E4E6;--r:14px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink2);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1500px;margin:0 auto;padding:28px 16px 80px}
+header{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between;margin-bottom:22px}
+.kicker{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--acc);margin:0 0 6px}
+h1{font-family:Outfit,Inter,sans-serif;font-size:34px;font-weight:800;letter-spacing:-.6px;color:var(--ink);margin:0}
+.sub{font-size:14px;color:var(--muted);margin:6px 0 0}
+.bar{display:flex;gap:8px;flex-wrap:wrap}
+button{font-family:inherit;font-size:14px;font-weight:600;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 16px;cursor:pointer;transition:.15s}
+button:hover{border-color:var(--accPale);background:var(--accSoft)}
+button.pri{background:var(--acc);border-color:var(--acc);color:#fff}button.pri:hover{background:#41609f}
+button.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:22px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.panel h2{font-family:Outfit,Inter,sans-serif;font-size:19px;font-weight:700;color:var(--ink);margin:0 0 4px}
+.panel .hint{font-size:13px;color:var(--muted);margin:0 0 14px}
+.row{display:grid;grid-template-columns:34px 150px 1fr 1fr 1fr;gap:8px;align-items:center;margin-bottom:8px}
+.num{width:30px;height:30px;border-radius:50%;background:var(--s3);color:var(--ink);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+input,select{font-family:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 11px;width:100%}
+input:focus{outline:2px solid var(--accPale);outline-offset:1px;background:#fff}
+.fam{margin-bottom:10px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.fam.top{background:var(--s2);border-color:var(--accPale)}
+.fam .h{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.fam .h b{color:var(--ink);font-size:16px}
+.fam .n{font-size:13px;font-weight:700;color:var(--acc);white-space:nowrap}
+.track{height:8px;background:var(--s3);border-radius:99px;overflow:hidden;margin:8px 0 10px}
+.fill{height:100%;background:var(--acc);border-radius:99px;transition:width .3s}
+.fam .axe{font-size:14px;color:var(--ink2)}
+.fam .axe b{color:var(--ink)}
+.fam .items{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 10px;color:var(--ink2)}
+.lvl{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;border-radius:999px;padding:3px 9px;margin-left:6px}
+.l1{background:var(--goBg);color:var(--go)}.l2{background:var(--accSoft);color:var(--acc)}.l3{background:var(--holdBg);color:var(--hold)}
+.declic{background:linear-gradient(160deg,#DCE5F6,#E7EDFA);border-radius:var(--r);padding:22px 24px;margin-bottom:18px}
+.declic .k{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--acc);margin:0 0 8px}
+.declic h3{font-family:Outfit,Inter,sans-serif;font-size:26px;font-weight:800;color:var(--ink);margin:0 0 8px;line-height:1.2}
+.declic p{margin:0 0 6px;font-size:15px}
+.declic .why{font-size:13px;color:var(--muted)}
+pre{background:var(--s2);border:1px solid var(--line);border-radius:11px;padding:14px;font-size:12px;line-height:1.55;white-space:pre-wrap;word-break:break-word;max-height:320px;overflow:auto;color:var(--ink2);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.sec{margin-top:20px}
+.foot{margin-top:28px;font-size:12px;color:var(--muted);text-align:center}
+body.proj .panel.input,body.proj .hideproj{display:none}
+body.proj .grid{grid-template-columns:1fr}
+body.proj .declic h3{font-size:38px}body.proj .declic p{font-size:20px}
+body.proj .fam .h b{font-size:21px}body.proj .fam .axe{font-size:18px}body.proj .chip{font-size:15px}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}.row{grid-template-columns:34px 1fr;grid-auto-rows:auto}}
+</style>
+<div class="wrap">
+<header>
+ <div><p class="kicker">BloomaxDay · Bloc 1 · démonstration 2</p><h1>Exaspérations</h1><p class="sub"><span id="subN">20</span> participants · trois tâches chacun · l'outil regroupe, propose l'axe d'automatisation, et désigne la tâche du déclic</p></div>
+ <div class="bar"><label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted)">Participants <input id="nb" type="number" min="1" max="60" value="20" style="width:70px;padding:8px 10px"></label><button id="bProj">Mode projection</button><button class="hideproj" id="bPrompt">Commande IA</button><button class="hideproj" id="bReset">Vider</button></div>
+</header>
+<div class="grid">
+ <div class="panel input"><h2>Saisie</h2><p class="hint">Une phrase par tâche, telle qu'ils la disent. La famille se détecte toute seule ; corrige-la dans la liste de droite si besoin.</p><div id="rows"></div></div>
+ <div>
+  <div id="declic"></div>
+  <div class="panel"><h2>Les familles</h2><p class="hint">Des dizaines de phrases, six ou sept familles. Pour chacune : par où on commence, et à quel niveau.</p><div id="fams"></div></div>
+  <div class="panel sec hideproj" id="pPrompt" style="display:none"><h2>Commande à coller dans l'IA</h2><p class="hint">Pour la restitution approfondie sur le second écran.</p><pre id="prompt"></pre><button class="pri" id="bCopy">Copier la commande</button></div>
+ </div>
+</div>
+<p class="foot">Les données restent dans ce navigateur. Rien n'est envoyé nulle part.</p>
+</div>
+<script>
+const KEY="bloomax-exasp-v2";let N=20;
+const blank=()=>({nom:"",t:["","",""],f:["","",""]});
+const FAM=[
+ {k:"saisie",t:"Ressaisie et double saisie",lvl:2,lt:"Connecteur",
+  kw:["ressaisi","resaisi","recopi","retap","saisie","saisir","tableur","excel","double","reporter","report","recopie"],
+  axe:"Brancher la source (mail, PDF, formulaire) sur le fichier de destination : l'information est saisie une fois, par celui qui la crée. Première étape : une seule ressaisie, celle qui revient le plus, en lecture seule.",
+  non:"On n'automatise pas la vérification finale des montants."},
+ {k:"relance",t:"Relances et impayés",lvl:1,lt:"Assistant",
+  kw:["relanc","impay","retard de paiement","paiement","encaiss","recouvr","facture en retard","factures en retard","réglé","regle"],
+  axe:"Un assistant qui, chaque lundi, liste ce qui est en retard et prépare les mails de relance adaptés au client et à l'ancienneté — dans les brouillons, jamais en envoi direct. Première étape cette semaine : les trois relances types écrites une fois.",
+  non:"On n'automatise pas la décision de passer au contentieux."},
+ {k:"devis",t:"Devis et chiffrage",lvl:1,lt:"Assistant",
+  kw:["devis","chiffr","tarif","prix","cotation","proposition commerciale","propale"],
+  axe:"Vos dix derniers devis gagnés donnent la trame. L'assistant produit le brouillon à partir de la demande client ; vous décidez la marge. Première étape : la technique à l'envers sur trois devis que vous jugez bons.",
+  non:"On n'automatise pas la marge ni l'engagement sur un délai."},
+ {k:"mail",t:"Mails et questions répétées",lvl:1,lt:"Assistant",
+  kw:["mail","e-mail","email","courriel","répondre","repondre","même question","meme question","boîte","boite","messagerie","sms","whatsapp","réponse","reponse"],
+  axe:"Trier en quatre catégories, puis cinq réponses types préparées en brouillon. Première étape : les cinq mails que vous écrivez chaque semaine, écrits une fois.",
+  non:"On n'envoie rien automatiquement vers un client."},
+ {k:"admin",t:"Administratif, comptes rendus, dossiers",lvl:1,lt:"Assistant",
+  kw:["compte rendu","compte-rendu","rapport","administratif","paperasse","déclaration","declaration","urssaf","formulaire","dossier","justificatif","pièce","piece","classement","classer","archiv","contrat","attestation","subvention"],
+  axe:"L'enregistrement vocal ou les notes deviennent le compte rendu, la liste d'actions et le mail de suivi. Les pièces se classent par règle. Première étape : un compte rendu dicté puis mis en forme, cette semaine.",
+  non:"On ne signe rien et on n'envoie rien sans relecture."},
+ {k:"planning",t:"Planning, rendez-vous, organisation",lvl:2,lt:"Connecteur",
+  kw:["planning","agenda","rendez-vous","rdv","réunion","reunion","organiser","organisation","créneau","creneau","déplacement","deplacement","tournée","tournee","horaire"],
+  axe:"L'agenda branché : les demandes de rendez-vous se qualifient et se proposent seules sur vos créneaux ouverts. Première étape : l'agenda en lecture, et une règle de créneaux écrite.",
+  non:"On ne déplace pas un rendez-vous client sans votre accord."},
+ {k:"recherche",t:"Chercher, retrouver, surveiller",lvl:2,lt:"Connecteur",
+  kw:["cherch","retrouv","trouver","veille","appel d'offre","appels d'offre","marché","marche","boamp","information","où est","ou est","fouill"],
+  axe:"Un balayage quotidien filtré sur vos critères, qui ne remonte que ce qui vous concerne. Première étape : vos critères écrits noir sur blanc — codes, zone, seuils.",
+  non:"On ne répond à aucun marché sans un go/no-go humain."},
+ {k:"autre",t:"Autre",lvl:1,lt:"À qualifier",kw:[],
+  axe:"À regarder à la main : fréquence par mois, et ce qui se passe si c'est faux. La grille de l'après-midi tranche.",non:""}
+];
+let D=[];try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&Array.isArray(o.D)){D=o.D;N=o.N||D.length}}}catch(e){}
+if(!Array.isArray(D)||!D.length)D=Array.from({length:N},blank);
+function resize(n){N=Math.max(1,Math.min(60,n|0));while(D.length<N)D.push(blank());D.length=N;document.getElementById("nb").value=N;document.getElementById("subN").textContent=N}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({N,D}))}catch(e){}}
+function esc(s){return String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
+function detect(s){const n=norm(s);if(!n.trim())return"";let best="autre",bs=0;for(const f of FAM){let sc=0;for(const k of f.kw){if(n.includes(norm(k)))sc+=k.length}if(sc>bs){bs=sc;best=f.k}}return best}
+const rows=document.getElementById("rows");
+function draw(){rows.innerHTML="";D.forEach((p,i)=>{const d=document.createElement("div");d.className="row";d.innerHTML='<div class="num">'+(i+1)+'</div><input placeholder="Prénom" value="'+esc(p.nom)+'" data-i="'+i+'" data-f="nom">'+[0,1,2].map(j=>'<input placeholder="Tâche '+(j+1)+'" value="'+esc(p.t[j])+'" data-i="'+i+'" data-j="'+j+'">').join("");rows.appendChild(d)})}
+rows.addEventListener("input",e=>{const i=+e.target.dataset.i;if(e.target.dataset.f==="nom"){D[i].nom=e.target.value}else{const j=+e.target.dataset.j;D[i].t[j]=e.target.value;D[i].f[j]=detect(e.target.value)}save();sync()});
+function allTasks(){const out=[];D.forEach((p,i)=>p.t.forEach((t,j)=>{if(t.trim())out.push({i,j,t,f:p.f[j]||detect(t),nom:p.nom||("P"+(i+1))})}));return out}
+function sync(){
+ const T=allTasks();const by={};FAM.forEach(f=>by[f.k]=[]);T.forEach(x=>(by[x.f]||by.autre).push(x));
+ const sorted=FAM.filter(f=>by[f.k].length).sort((a,b)=>by[b.k].length-by[a.k].length);
+ const fams=document.getElementById("fams");
+ fams.innerHTML=sorted.map((f,idx)=>{const L=by[f.k];const people=new Set(L.map(x=>x.i)).size;return'<div class="fam'+(idx===0?" top":"")+'"><div class="h"><b>'+f.t+'<span class="lvl l'+f.lvl+'">'+f.lt+'</span></b><span class="n">'+L.length+' tâche'+(L.length>1?"s":"")+' · '+people+' pers.</span></div><div class="track"><div class="fill" style="width:'+Math.round(L.length/Math.max(1,T.length)*100)+'%"></div></div><p class="axe"><b>Par où on commence :</b> '+f.axe+(f.non?' <span style="color:var(--muted)">— '+f.non+'</span>':'')+'</p><div class="items">'+L.map(x=>'<span class="chip" title="'+esc(x.nom)+'">'+esc(x.t)+' <select data-i="'+x.i+'" data-j="'+x.j+'" style="width:auto;font-size:11px;padding:1px 4px;margin-left:4px;border-radius:6px">'+FAM.map(g=>'<option value="'+g.k+'"'+(g.k===x.f?" selected":"")+'>'+g.t+'</option>').join("")+'</select></span>').join("")+'</div></div>'}).join("")||'<p class="hint" style="margin:0">Aucune tâche saisie pour l\'instant.</p>';
+ const dc=document.getElementById("declic");
+ if(T.length<6){dc.innerHTML='<div class="declic"><p class="k">La tâche du déclic</p><h3>Se révèle à partir de six tâches saisies.</h3><p class="why">'+T.length+' saisie'+(T.length>1?"s":"")+' pour l\'instant.</p></div>';}
+ else{
+  const top=sorted[0];const L=by[top.k];const people=new Set(L.map(x=>x.i)).size;
+  const ex=L.slice(0,3).map(x=>'« '+esc(x.t)+' »').join(", ");
+  const nTot=new Set(T.map(x=>x.i)).size;
+  dc.innerHTML='<div class="declic"><p class="k">La tâche du déclic</p><h3>'+top.t+' — '+people+' personne'+(people>1?"s":"")+' sur '+nTot+'.</h3><p>'+ex+'</p><p><b style="color:var(--ink)">Pourquoi celle-là :</b> elle revient chaque semaine, une erreur coûte peu, et elle existe chez la majorité d\'entre vous. C\'est exactement le profil d\'une première automatisation — et celui qui produit le déclic quand on la voit traitée en deux minutes.</p><p class="why">Niveau de départ : '+top.lt+'. '+(top.non||"")+'</p></div>';
+ }
+ buildPrompt(T,sorted,by);
+}
+document.getElementById("fams").addEventListener("change",e=>{if(e.target.tagName!=="SELECT")return;const i=+e.target.dataset.i,j=+e.target.dataset.j;D[i].f[j]=e.target.value;save();sync()});
+function buildPrompt(T,sorted,by){
+ const lines=T.map(x=>"- "+x.nom+" : "+x.t).join("\n");
+ const txt="Tu es mon assistant d'animation pour une journée IA destinée à des dirigeants de TPE-PME à La Réunion.\n\nVoici les tâches que "+new Set(T.map(x=>x.i)).size+" participants ont déclarées comme les plus exaspérantes de leur semaine :\n\n"+lines+"\n\nProduis, en français, sans introduction :\n\n1. REGROUPEMENT — regroupe ces tâches en familles (six au maximum), chaque famille en une ligne avec le nombre de tâches et de personnes concernées. Garde leurs mots.\n2. POUR CHAQUE FAMILLE — en trois lignes : ce qu'on automatise d'abord, à quel niveau (assistant qui prépare / connecteur qui lit une source / agent qui agit), et ce qu'on n'automatise surtout pas.\n3. LA TÂCHE DU DÉCLIC — une seule tâche de la liste, citée mot pour mot, que je vais traiter en direct dans les deux minutes qui viennent devant la salle. Critères : revient chaque semaine, faible enjeu si c'est raté, faisable avec un simple assistant sans brancher aucun outil. Justifie en deux lignes.\n4. LA CONSIGNE DE DÉMONSTRATION — écris la commande exacte que je vais coller pour traiter cette tâche devant eux, avec un exemple d'entrée réaliste mais fictif (aucun nom réel).\n5. CE QUE ÇA RÉVÈLE — une phrase sur ce que cette liste dit de ces entreprises, à dire à voix haute.\n\nContraintes : n'invente aucun chiffre, ne nomme aucun outil commercial, sois direct.";
+ document.getElementById("prompt").textContent=txt;
+}
+document.getElementById("bProj").addEventListener("click",e=>{document.body.classList.toggle("proj");e.target.classList.toggle("on");e.target.textContent=document.body.classList.contains("proj")?"Quitter la projection":"Mode projection"});
+document.getElementById("bPrompt").addEventListener("click",()=>{const p=document.getElementById("pPrompt");p.style.display=p.style.display==="none"?"block":"none"});
+document.getElementById("bCopy").addEventListener("click",e=>{navigator.clipboard.writeText(document.getElementById("prompt").textContent).then(()=>{e.target.textContent="Copié";setTimeout(()=>e.target.textContent="Copier la commande",1600)}).catch(()=>{e.target.textContent="Sélectionne le texte et Cmd+C"})});
+document.getElementById("bReset").addEventListener("click",()=>{D=Array.from({length:N},blank);save();draw();sync()});
+document.getElementById("nb").addEventListener("change",e=>{resize(+e.target.value);save();draw();sync()});
+resize(N);draw();sync();
+</script>
+
+</html>

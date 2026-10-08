@@ -1,0 +1,446 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mon Premier Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap">
+<style>
+/* Parcours en six questions, une par écran, puis un prompt à coller dans son IA.
+   Palette pastel claire, thème unique, pensée pour une salle et pour un téléphone. */
+:root{
+  --bg:#F7F9FD; --surface:#FFFFFF; --surface-2:#EDF1FA; --surface-3:#DCE5F6;
+  --line:#DCE3F1; --line-soft:#E8EDF7;
+  --ink:#27314E; --ink-2:#556080; --muted:#8792AC;
+  --accent:#4E6FB5; --accent-soft:#E7EDFA; --accent-pale:#C9D7F2;
+  --ok:#3F7F63; --ok-soft:#DFF0E7; --ok-line:#BFE0CE;
+  --warn:#9A6B1E; --warn-soft:#F7ECD7;
+  --display:'Outfit','Trebuchet MS',sans-serif;
+  --body:'Inter','Helvetica Neue',Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg); color:var(--ink-2); font-family:var(--body); font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display); color:var(--ink); margin:0; text-wrap:balance}
+button{font:inherit; font-family:var(--body); cursor:pointer}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px; border-radius:8px}
+
+.shell{max-width:980px; margin:0 auto; padding-left:20px; padding-right:20px; padding-block:28px 56px}
+
+.head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:22px}
+.eyebrow{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700}
+.head .sig{font-size:12px; color:var(--muted); margin-left:auto}
+
+.card{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:30px}
+@media (max-width:560px){ .card{padding:22px} }
+
+/* accueil */
+.hero h1{font-size:clamp(30px,6vw,46px); font-weight:800; letter-spacing:-.025em; line-height:1.08}
+.hero h1 span{color:var(--accent)}
+.hero p.lede{font-size:clamp(17px,2.4vw,20px); margin:16px 0 0; max-width:62ch}
+.steps3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:26px}
+@media (max-width:640px){ .steps3{grid-template-columns:minmax(0,1fr)} }
+.s3{background:var(--surface-2); border-radius:12px; padding:18px}
+.s3 b{display:block; font-family:var(--display); color:var(--ink); font-size:17px; margin-bottom:4px}
+.s3 span{font-size:14px; color:var(--ink-2)}
+.cta{display:flex; gap:10px; flex-wrap:wrap; margin-top:26px}
+
+.btn{background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:12px; padding:13px 20px; font-weight:600; font-size:15px}
+.btn:hover{background:var(--surface-2)}
+.btn-primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn-primary:hover{background:#3F5E9F}
+.btn-quiet{background:transparent; border-color:transparent; color:var(--ink-2)}
+.btn-quiet:hover{background:var(--surface-2)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+
+/* progression */
+.prog{display:flex; align-items:center; gap:12px; margin-bottom:20px}
+.prog-track{flex:1; height:8px; background:var(--surface-2); border-radius:999px; overflow:hidden; min-width:0}
+.prog-fill{height:100%; width:0; background:var(--accent); border-radius:999px; transition:width .35s ease}
+.prog-n{font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); white-space:nowrap}
+
+/* question */
+.q .num{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700}
+.q h2{font-size:clamp(24px,4vw,32px); font-weight:800; letter-spacing:-.02em; margin-top:8px; line-height:1.15}
+.q .why{font-size:15px; color:var(--muted); margin:10px 0 0; max-width:60ch}
+textarea{width:100%; margin-top:18px; font-family:var(--body); font-size:17px; line-height:1.6; color:var(--ink);
+  background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:14px 16px; resize:vertical}
+textarea::placeholder{color:#A6AFC4}
+textarea:focus{background:#fff; border-color:var(--accent-pale)}
+.ex{margin-top:12px; font-size:14px; color:var(--muted); background:var(--surface-2); border-radius:10px; padding:12px 14px}
+.ex b{color:var(--ink-2)}
+.nav{display:flex; justify-content:space-between; gap:10px; margin-top:24px; flex-wrap:wrap}
+
+/* jauge de contexte */
+.gauge{margin-top:22px; border-top:1px solid var(--line-soft); padding-top:16px; display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+.gauge-track{flex:1; min-width:140px; height:10px; background:var(--surface-2); border-radius:999px; overflow:hidden}
+.gauge-fill{height:100%; width:0; background:var(--accent-pale); border-radius:999px; transition:width .4s ease, background .4s ease}
+.gauge-txt{font-size:14px; font-weight:600; color:var(--ink-2)}
+.gauge-txt b{color:var(--ink)}
+
+/* destinations */
+.dests{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:20px}
+@media (max-width:640px){ .dests{grid-template-columns:minmax(0,1fr)} }
+.dest{text-align:left; background:var(--surface-2); border:1px solid var(--line); border-radius:14px; padding:16px 18px}
+.dest b{display:block; font-family:var(--display); font-size:17px; color:var(--ink); margin-bottom:3px}
+.dest span{font-size:14px; color:var(--ink-2)}
+.dest[aria-pressed="true"]{background:var(--accent-soft); border-color:var(--accent-pale)}
+
+/* résultat */
+.result h2{font-size:clamp(26px,4.5vw,34px); font-weight:800; letter-spacing:-.02em}
+.verdict{margin-top:18px; border-radius:14px; padding:18px 20px; background:var(--ok-soft); border:1px solid var(--ok-line)}
+.verdict b{color:var(--ok)}
+.verdict.thin{background:var(--warn-soft); border-color:#E7D4AE}
+.verdict.thin b{color:var(--warn)}
+pre.prompt{margin:18px 0 0; background:var(--surface-2); border:1px solid var(--line); border-radius:14px;
+  padding:18px; font-family:var(--body); font-size:14px; line-height:1.6; color:var(--ink);
+  white-space:pre-wrap; max-height:52vh; overflow:auto; min-width:0}
+.howto{margin-top:18px; background:var(--surface-3); border-radius:14px; padding:18px 20px}
+.howto h3{font-size:17px; margin-bottom:8px}
+.howto ol{margin:0; padding-left:20px; font-size:15px}
+.howto li{margin-bottom:5px}
+.howto li::marker{color:var(--accent); font-weight:700}
+.warnbox{margin-top:16px; background:var(--warn-soft); border-radius:12px; padding:14px 16px; font-size:14px; color:var(--ink-2)}
+.warnbox b{color:var(--warn)}
+.foot{margin-top:28px; font-size:13px; color:var(--muted); text-align:center}
+</style>
+
+<div class="shell">
+  <div class="head">
+    <span class="eyebrow">BloomaxDay · Atelier 1</span>
+    <span class="sig">Alexandre BETON — intervenant BLOOMAX</span>
+  </div>
+
+  <!-- ACCUEIL -->
+  <div class="card hero" id="scrHome">
+    <h1>Six questions, et votre IA vous construit <span>votre outil</span>.</h1>
+    <p class="lede">Pas une réponse. Un outil : une procédure réutilisable, une interface pour la faire tourner, et la version papier pour les jours où l'IA n'est pas là. Vous répondez ici, vous collez le résultat chez vous — ChatGPT, Claude, Gemini ou votre terminal. Quatre minutes.</p>
+    <div class="steps3">
+      <div class="s3"><b>1 · Vous répondez</b><span>Six questions sur votre métier et sur la tâche qui vous coûte le plus de temps.</span></div>
+      <div class="s3"><b>2 · On assemble</b><span>Vos réponses deviennent une commande précise, structurée comme un cahier des charges.</span></div>
+      <div class="s3"><b>3 · Vous collez</b><span>Votre IA construit l'outil, le teste contre trois critères, et vous le rend prêt à l'emploi.</span></div>
+    </div>
+    <div class="cta">
+      <button class="btn btn-primary" id="goBtn">Commencer</button>
+      <button class="btn" id="demoBtn">Voir avec un exemple rempli</button>
+    </div>
+    <div class="warnbox" style="margin-top:24px"><b>Une règle avant de commencer.</b> Rien de ce que vous écrivez ici ne quitte votre navigateur. Mais la commande finale, vous allez la coller dans un outil en ligne : écrivez « le client » plutôt qu'un nom, et laissez vos montants réels de côté.</div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div class="card q" id="scrQ" hidden>
+    <div class="prog">
+      <span class="prog-n" id="progN">Question 1 sur 6</span>
+      <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+    </div>
+    <span class="num" id="qNum"></span>
+    <h2 id="qTitle"></h2>
+    <p class="why" id="qWhy"></p>
+    <textarea id="qInput" rows="5"></textarea>
+    <div class="ex" id="qEx"></div>
+    <div class="gauge">
+      <span class="gauge-txt" id="gaugeTxt"></span>
+      <div class="gauge-track"><div class="gauge-fill" id="gaugeFill"></div></div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-quiet" id="backBtn">Retour</button>
+      <button class="btn btn-primary" id="nextBtn">Suivant</button>
+    </div>
+  </div>
+
+  <!-- DESTINATION -->
+  <div class="card q" id="scrDest" hidden>
+    <span class="num">Dernière étape</span>
+    <h2>Où allez-vous le coller ?</h2>
+    <p class="why">La commande n'est pas la même selon l'outil : chacun fabrique et conserve les choses à sa façon.</p>
+    <div class="dests" id="dests"></div>
+    <div class="nav">
+      <button class="btn btn-quiet" id="backBtn2">Retour</button>
+      <button class="btn btn-primary" id="buildBtn">Construire ma commande</button>
+    </div>
+  </div>
+
+  <!-- RESULTAT -->
+  <div class="card result" id="scrOut" hidden>
+    <span class="num">Votre commande</span>
+    <h2 id="outTitle">Prêt à coller</h2>
+    <div class="verdict" id="verdict"></div>
+    <pre class="prompt" id="prompt"></pre>
+    <div class="cta">
+      <button class="btn btn-primary" id="copyBtn">Copier la commande</button>
+      <a class="btn" id="openLink" href="https://claude.ai/new" target="_blank" rel="noopener">Ouvrir l'outil</a>
+      <button class="btn btn-quiet" id="editBtn">Modifier mes réponses</button>
+    </div>
+    <div class="howto">
+      <h3 id="howtoTitle">Ce que vous faites avec</h3>
+      <ol id="howtoList"></ol>
+    </div>
+    <div class="warnbox"><b>Relisez avant de coller.</b> Un nom de client, un montant réel, un numéro de dossier : remplacez-les. Une commande se partage, des données non.</div>
+  </div>
+
+  <p class="foot">Construit pour le BloomaxDay. Vos réponses restent dans votre navigateur.</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var Q = [
+    {
+      k: "activite", n: "Question 1",
+      t: "Votre activité, en une phrase",
+      why: "C'est ce qui fait la différence entre une réponse générique et une réponse qui vous ressemble.",
+      ex: "<b>Par exemple :</b> entreprise de second œuvre, 6 salariés, ouest de La Réunion, clients particuliers et petites copropriétés.",
+      ph: "Ce que vous faites, pour qui, à quelle échelle.", rows: 3
+    },
+    {
+      k: "tache", n: "Question 2",
+      t: "La tâche qui vous coûte le plus de temps chaque semaine",
+      why: "Pas la plus importante. La plus répétitive — celle que vous faites le vendredi à dix-sept heures en soupirant.",
+      ex: "<b>Par exemple :</b> rédiger un devis de dépannage après une visite sur site. Ou : faire le compte rendu d'une réunion de chantier.",
+      ph: "Une seule tâche, décrite simplement.", rows: 3
+    },
+    {
+      k: "etapes", n: "Question 3",
+      t: "Comment vous la faites aujourd'hui",
+      why: "Les étapes réelles, dans l'ordre. La plupart des échecs viennent d'ici : on demande à l'IA une tâche qu'on n'a jamais écrite soi-même.",
+      ex: "<b>Une étape par ligne.</b> Même les évidentes — ce sont celles qu'on oublie de dire.",
+      ph: "1. …\n2. …\n3. …", rows: 6
+    },
+    {
+      k: "contraintes", n: "Question 4",
+      t: "Ce qui n'est jamais négociable chez vous",
+      why: "Vos règles de maison. Sans elles, l'IA applique les règles de quelqu'un d'autre.",
+      ex: "<b>Par exemple :</b> vouvoiement, phrases courtes, pas de jargon. TVA 8,5 %. Validité 30 jours. Déplacement facturé à part.",
+      ph: "Ton, format, règles métier, mentions obligatoires…", rows: 4
+    },
+    {
+      k: "format", n: "Question 5",
+      t: "La forme exacte du résultat attendu",
+      why: "Soyez tatillon ici. C'est ce qui vous évitera dix allers-retours plus tard.",
+      ex: "<b>Par exemple :</b> 1) objet en une ligne — 2) descriptif poste par poste — 3) tableau à compléter — 4) conditions. Une page maximum.",
+      ph: "Structure, longueur, titres attendus.", rows: 4
+    },
+    {
+      k: "interdits", n: "Question 6",
+      t: "Ce que l'IA doit refuser de faire",
+      why: "La question que personne ne pose, et celle qui vous évitera un problème. Une IA qui ne sait pas s'arrêter vous engage à votre place.",
+      ex: "<b>Par exemple :</b> ne jamais inventer un prix, un délai, une référence produit. Si l'information manque, écrire « à compléter » et me le signaler.",
+      ph: "Ce qu'elle n'invente jamais, ce qu'elle ne décide jamais.", rows: 4
+    }
+  ];
+
+  var DESTS = [
+    { k: "claude", b: "Claude", s: "claude.ai — il construit l'outil comme une page interactive.", url: "https://claude.ai/new" },
+    { k: "chatgpt", b: "ChatGPT", s: "chatgpt.com — il garde la procédure dans un projet réutilisable.", url: "https://chatgpt.com/" },
+    { k: "gemini", b: "Gemini", s: "gemini.google.com — la procédure devient un Gem, gratuit et permanent.", url: "https://gemini.google.com/" },
+    { k: "code", b: "Claude Code ou un terminal", s: "Il écrit les fichiers de la procédure directement chez vous.", url: "https://claude.ai/code" }
+  ];
+
+  var EX = {
+    activite: "Entreprise de second œuvre, 6 salariés, ouest de La Réunion. Clients : particuliers et petites copropriétés. Dépannages et petits chantiers.",
+    tache: "Rédiger un devis de dépannage après une visite sur site.",
+    etapes: "1. Relire mes notes de visite\n2. Retrouver un devis comparable dans mes archives\n3. Chiffrer main-d'œuvre et fournitures\n4. Rédiger le descriptif des travaux\n5. Ajouter conditions et délai de validité\n6. Relire et envoyer",
+    contraintes: "Vouvoiement, phrases courtes, aucun jargon technique. TVA 8,5 %. Validité du devis : 30 jours. Déplacement facturé à part. Délai annoncé uniquement s'il figure dans mes notes.",
+    format: "1) Objet en une ligne. 2) Descriptif des travaux poste par poste. 3) Tableau quantité / unité / prix unitaire laissé à compléter. 4) Conditions et délai de validité. Une page maximum.",
+    interdits: "Ne jamais inventer un prix, une quantité, une marque de matériel ou un délai. Si l'information manque, écrire « à compléter » et me le signaler en fin de document."
+  };
+
+  var state = { i: 0, dest: "claude", data: {} };
+  Q.forEach(function (q) { state.data[q.k] = ""; });
+
+  var STORE = "mon-premier-assistant-v1";
+  function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
+  function load() {
+    try {
+      var p = JSON.parse(localStorage.getItem(STORE) || "null");
+      if (!p || typeof p !== "object") return;
+      if (p.data) Q.forEach(function (q) { if (typeof p.data[q.k] === "string") state.data[q.k] = p.data[q.k]; });
+      if (typeof p.dest === "string") state.dest = p.dest;
+    } catch (e) {}
+  }
+
+  var el = function (id) { return document.getElementById(id); };
+  var scr = { home: el("scrHome"), q: el("scrQ"), dest: el("scrDest"), out: el("scrOut") };
+
+  function show(name) {
+    Object.keys(scr).forEach(function (k) { scr[k].hidden = (k !== name); });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function words(s) { s = (s || "").trim(); return s ? s.split(/\s+/).length : 0; }
+
+  function score() {
+    var total = 0;
+    Q.forEach(function (q) {
+      var w = words(state.data[q.k]);
+      var pts = w === 0 ? 0 : w < 6 ? 5 : w < 15 ? 11 : w < 30 ? 15 : 17;
+      total += pts;
+    });
+    return Math.min(100, Math.round(total));
+  }
+
+  function gaugeLabel(s) {
+    if (s < 25) return ["Contexte très mince", "votre IA vous rendra la moyenne d'internet"];
+    if (s < 50) return ["Contexte partiel", "elle devinera ce que vous n'avez pas dit"];
+    if (s < 75) return ["Bon contexte", "les réponses commencent à vous ressembler"];
+    return ["Contexte solide", "elle travaille avec votre métier, pas avec le métier en général"];
+  }
+
+  function renderGauge() {
+    var s = score(), lab = gaugeLabel(s);
+    el("gaugeFill").style.width = s + "%";
+    el("gaugeFill").style.background = s < 25 ? "#E3C98F" : s < 50 ? "#C9D7F2" : s < 75 ? "#8FAAE0" : "#4E6FB5";
+    el("gaugeTxt").innerHTML = "<b>" + lab[0] + "</b> — " + lab[1];
+  }
+
+  function renderQ() {
+    var q = Q[state.i];
+    el("progN").textContent = "Question " + (state.i + 1) + " sur " + Q.length;
+    el("progFill").style.width = Math.round(((state.i) / Q.length) * 100) + "%";
+    el("qNum").textContent = q.n;
+    el("qTitle").textContent = q.t;
+    el("qWhy").textContent = q.why;
+    el("qEx").innerHTML = q.ex;
+    var ta = el("qInput");
+    ta.rows = q.rows; ta.value = state.data[q.k] || ""; ta.placeholder = q.ph;
+    el("backBtn").textContent = state.i === 0 ? "Retour à l'accueil" : "Question précédente";
+    el("nextBtn").textContent = state.i === Q.length - 1 ? "Choisir mon outil" : "Suivant";
+    renderGauge();
+    ta.focus();
+  }
+
+  el("qInput").addEventListener("input", function () {
+    state.data[Q[state.i].k] = this.value; renderGauge(); save();
+  });
+
+  function renderDests() {
+    var box = el("dests"); box.textContent = "";
+    DESTS.forEach(function (d) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "dest";
+      b.setAttribute("aria-pressed", state.dest === d.k ? "true" : "false");
+      var t = document.createElement("b"); t.textContent = d.b;
+      var s = document.createElement("span"); s.textContent = d.s;
+      b.appendChild(t); b.appendChild(s);
+      b.addEventListener("click", function () { state.dest = d.k; renderDests(); save(); });
+      box.appendChild(b);
+    });
+  }
+
+  function block(title, body) {
+    if (!body || !body.trim()) return "";
+    return "## " + title + "\n" + body.trim() + "\n\n";
+  }
+
+  var COMMON_ASK = [
+    "1. LA PROCÉDURE. Une consigne réutilisable, que je pourrai enregistrer et relancer chaque semaine sans rien réexpliquer. Elle reprend tout ce qui est écrit plus haut, réorganisé proprement.",
+    "2. L'OUTIL. Une interface simple où je remplis uniquement ce qui change d'une fois sur l'autre, et qui produit le document final au format exact demandé.",
+    "3. LES TESTS. Trois vérifications que le résultat doit passer avant que je l'envoie. Formule-les comme des questions auxquelles on répond par oui ou non.",
+    "4. LE MODE DÉGRADÉ. La même tâche en version papier : la liste des points à couvrir, dans l'ordre, pour le jour où l'outil n'est pas disponible. Si ma procédure ne tient pas sans toi, elle n'est pas fiable."
+  ].join("\n");
+
+  var RULES = [
+    "- N'invente aucune donnée chiffrée, aucun nom, aucun délai, aucune référence. Ce qui manque s'écrit « à compléter » et m'est signalé.",
+    "- Avant de produire quoi que ce soit, pose-moi au maximum trois questions, et seulement si une information indispensable manque vraiment.",
+    "- Écris en français, dans le registre que j'ai décrit, sans jargon d'IA."
+  ].join("\n");
+
+  function buildPrompt() {
+    var d = state.data, head = "", tail = "";
+
+    if (state.dest === "claude") {
+      head = "Tu vas me construire un outil de travail, pas me donner une réponse.\n\n" +
+        "Produis-le en artefact : une page interactive que je pourrai rouvrir et réutiliser.\n\n";
+      tail = "\nCommence par la procédure, puis construis l'artefact, puis donne les tests et le mode dégradé.";
+    } else if (state.dest === "chatgpt") {
+      head = "Tu vas me construire un outil de travail, pas me donner une réponse.\n\n" +
+        "Rends la procédure sous une forme que je puisse coller telle quelle dans les instructions d'un projet ou d'un GPT personnalisé, puis construis l'interface en HTML dans le canevas.\n\n";
+      tail = "\nTermine en me disant exactement où coller la procédure pour qu'elle soit conservée.";
+    } else if (state.dest === "gemini") {
+      head = "Tu vas me construire un outil de travail, pas me donner une réponse.\n\n" +
+        "Rends la procédure sous une forme que je puisse coller dans les instructions d'un Gem, et dis-moi quels documents y attacher.\n\n";
+      tail = "\nTermine en me disant quoi coller dans le Gem, et quoi garder à côté.";
+    } else {
+      head = "Tu vas me construire un outil de travail dans ce dossier, pas me donner une réponse.\n\n" +
+        "Crée une compétence réutilisable : un fichier SKILL.md avec un en-tête name et description, le corps de la procédure, et un sous-dossier references/ pour les documents que je te fournirai. Lis ce qui existe déjà dans le dossier avant d'écrire quoi que ce soit.\n\n";
+      tail = "\nÀ la fin, liste les fichiers créés et la commande pour relancer la procédure.";
+    }
+
+    var body =
+      block("MON ACTIVITÉ", d.activite) +
+      block("LA TÂCHE À REPRENDRE", d.tache) +
+      block("COMMENT JE LA FAIS AUJOURD'HUI", d.etapes) +
+      block("CE QUI N'EST JAMAIS NÉGOCIABLE", d.contraintes) +
+      block("LE FORMAT EXACT DU RÉSULTAT", d.format) +
+      block("CE QUE TU REFUSES DE FAIRE", d.interdits);
+
+    return head + body +
+      "## CE QUE JE TE DEMANDE DE PRODUIRE\n" + COMMON_ASK + "\n\n" +
+      "## RÈGLES\n" + RULES + "\n" + tail;
+  }
+
+  var HOWTO = {
+    claude: ["Ouvrez une nouvelle conversation sur claude.ai.", "Collez la commande, envoyez.", "Répondez à ses questions s'il en pose.", "Il produit une page interactive : testez-la sur un cas réel.", "Enregistrez la procédure dans un projet pour la retrouver la semaine prochaine."],
+    chatgpt: ["Ouvrez une nouvelle conversation sur chatgpt.com.", "Collez la commande, envoyez.", "Récupérez la procédure qu'il vous rend.", "Créez un projet ou un GPT personnalisé et collez-y cette procédure.", "La semaine prochaine, vous ouvrez le projet et vous donnez seulement ce qui change."],
+    gemini: ["Ouvrez gemini.google.com.", "Collez la commande, envoyez.", "Récupérez la procédure qu'il vous rend.", "Créez un Gem, collez-y la procédure, attachez vos documents de référence.", "Le Gem garde ses instructions pour toujours — c'est gratuit et illimité."],
+    code: ["Ouvrez votre terminal dans le dossier de travail concerné.", "Lancez votre assistant de code et collez la commande.", "Validez les fichiers qu'il propose avant qu'il les écrive.", "Testez la procédure sur un cas réel.", "Versionnez le dossier : la procédure devient un actif de l'entreprise."]
+  };
+
+  function renderOut() {
+    var s = score(), lab = gaugeLabel(s);
+    var v = el("verdict");
+    v.className = "verdict" + (s < 50 ? " thin" : "");
+    v.innerHTML = "<b>" + lab[0] + " — " + s + " sur 100.</b> " +
+      (s < 50
+        ? "Votre commande partira quand même, mais l'IA comblera les trous toute seule. Revenez compléter les questions courtes : c'est là que se joue la différence."
+        : "Votre commande contient ce que vos concurrents n'ont pas : votre contexte. C'est la seule chose qu'un modèle ne peut pas répliquer.");
+
+    el("prompt").textContent = buildPrompt();
+
+    var d = DESTS.filter(function (x) { return x.k === state.dest; })[0];
+    el("openLink").href = d.url;
+    el("openLink").textContent = "Ouvrir " + d.b;
+    el("outTitle").textContent = "Votre commande pour " + d.b;
+    el("howtoTitle").textContent = "Ce que vous faites avec, dans l'ordre";
+    var ol = el("howtoList"); ol.textContent = "";
+    HOWTO[state.dest].forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ol.appendChild(li); });
+  }
+
+  el("goBtn").addEventListener("click", function () { state.i = 0; renderQ(); show("q"); });
+  el("demoBtn").addEventListener("click", function () {
+    Q.forEach(function (q) { state.data[q.k] = EX[q.k] || ""; });
+    save(); state.i = 0; renderQ(); show("q");
+  });
+  el("nextBtn").addEventListener("click", function () {
+    if (state.i < Q.length - 1) { state.i++; renderQ(); save(); }
+    else { renderDests(); show("dest"); save(); }
+  });
+  el("backBtn").addEventListener("click", function () {
+    if (state.i === 0) { show("home"); } else { state.i--; renderQ(); }
+  });
+  el("backBtn2").addEventListener("click", function () { state.i = Q.length - 1; renderQ(); show("q"); });
+  el("buildBtn").addEventListener("click", function () { renderOut(); show("out"); save(); });
+  el("editBtn").addEventListener("click", function () { state.i = 0; renderQ(); show("q"); });
+
+  el("copyBtn").addEventListener("click", function () {
+    var btn = this, txt = buildPrompt();
+    function fallback() {
+      var r = document.createRange(); r.selectNodeContents(el("prompt"));
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      btn.textContent = "Sélectionné — Ctrl+C";
+      setTimeout(function () { btn.textContent = "Copier la commande"; }, 2600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function () {
+        btn.textContent = "Copié — collez-le dans votre IA";
+        setTimeout(function () { btn.textContent = "Copier la commande"; }, 2600);
+      }).catch(fallback);
+    } else { fallback(); }
+  });
+
+  load();
+  renderDests();
+})();
+</script>
+
+</html>
