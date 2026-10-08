@@ -1,0 +1,560 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Atelier Première Procédure</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap">
+<style>
+/* Atelier conduit depuis l'estrade : rail d'étapes en haut, consigne à gauche,
+   consigne construite en direct à droite. Palette pastel claire, thème unique. */
+:root{
+  --bg:#F7F9FD; --surface:#FFFFFF; --surface-2:#EDF1FA; --surface-3:#DCE5F6;
+  --line:#DCE3F1; --line-soft:#E8EDF7;
+  --ink:#27314E; --ink-2:#556080; --muted:#8792AC;
+  --accent:#4E6FB5; --accent-soft:#E7EDFA; --accent-pale:#C9D7F2;
+  --ok:#3F7F63; --ok-soft:#DFF0E7;
+  --warn:#9A6B1E; --warn-soft:#F7ECD7;
+  --display:'Outfit', 'Trebuchet MS', sans-serif;
+  --body:'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --r:14px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--ink-2);
+  font-family:var(--body); font-size:16px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--display); color:var(--ink); margin:0; text-wrap:balance}
+button{font:inherit; font-family:var(--body); cursor:pointer}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px; border-radius:6px}
+
+/* ---------- en-tête ---------- */
+.topbar{
+  position:sticky; top:env(safe-area-inset-top, 0px); z-index:20;
+  background:#F7F9FDF2; border-bottom:1px solid var(--line);
+  padding-block:14px; padding-left:20px; padding-right:20px;
+}
+.topbar-in{max-width:1480px; margin:0 auto; display:flex; align-items:center; gap:20px; flex-wrap:wrap}
+.brand{display:flex; flex-direction:column; gap:2px; min-width:0}
+.brand .eyebrow{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700}
+.brand h1{font-size:22px; font-weight:800; letter-spacing:-.01em}
+.spacer{flex:1 1 auto}
+
+.clock{display:flex; align-items:center; gap:14px}
+.clock-face{
+  font-family:var(--display); font-variant-numeric:tabular-nums;
+  font-size:46px; font-weight:700; line-height:1; color:var(--ink);
+  min-width:160px; text-align:right;
+}
+.clock-face.over{color:var(--warn)}
+.clock-meta{font-size:12px; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; font-weight:600}
+.ctrls{display:flex; gap:8px; flex-wrap:wrap}
+.btn{
+  background:var(--surface); color:var(--ink); border:1px solid var(--line);
+  border-radius:10px; padding:10px 16px; font-weight:600; font-size:14px;
+}
+.btn:hover{background:var(--surface-2)}
+.btn-primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn-primary:hover{background:#3F5E9F}
+.btn-quiet{background:transparent; color:var(--ink-2)}
+.btn-quiet:hover{background:var(--surface-2)}
+
+/* ---------- rail d'étapes ---------- */
+.rail{
+  background:var(--surface); border-bottom:1px solid var(--line);
+  padding-block:12px; padding-left:20px; padding-right:20px; overflow-x:auto;
+}
+.rail-in{max-width:1480px; margin:0 auto; display:flex; gap:10px; min-width:0}
+.step{
+  flex:1 1 0; min-width:170px; text-align:left;
+  background:var(--surface-2); border:1px solid var(--line-soft);
+  border-radius:12px; padding:12px 14px;
+  display:flex; flex-direction:column; gap:4px;
+}
+.step .n{font-size:11px; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:var(--muted)}
+.step .t{font-family:var(--display); font-size:16px; font-weight:700; color:var(--ink); line-height:1.2}
+.step .d{font-size:12px; color:var(--muted); font-weight:600; font-variant-numeric:tabular-nums}
+.step[aria-current="step"]{background:var(--accent-soft); border-color:var(--accent-pale)}
+.step[aria-current="step"] .n{color:var(--accent)}
+.step.done{background:var(--ok-soft); border-color:#CBE5D8}
+.step.done .n{color:var(--ok)}
+
+/* ---------- corps ---------- */
+.wrap{max-width:1480px; margin:0 auto; padding-left:20px; padding-right:20px; padding-block:26px}
+.cols{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:24px; align-items:start}
+
+.panel{background:var(--surface); border:1px solid var(--line); border-radius:var(--r); padding:26px}
+.panel + .panel{margin-top:20px}
+
+.brief{background:var(--surface-3); border:none}
+.brief .kicker{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700}
+.brief h2{font-size:34px; font-weight:800; letter-spacing:-.02em; margin-top:8px}
+.brief p.say{font-size:20px; line-height:1.5; color:var(--ink); margin:14px 0 0}
+.brief ul{margin:14px 0 0; padding-left:20px; font-size:17px; line-height:1.6}
+.brief li{margin-bottom:6px}
+.brief li::marker{color:var(--accent)}
+
+label.f{display:block; margin-bottom:18px}
+label.f:last-child{margin-bottom:0}
+label.f .lab{display:block; font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--accent); margin-bottom:6px}
+label.f .hint{display:block; font-size:13px; color:var(--muted); margin-bottom:8px; line-height:1.45}
+textarea,input[type=text]{
+  width:100%; font-family:var(--body); font-size:16px; line-height:1.55; color:var(--ink);
+  background:var(--surface-2); border:1px solid var(--line); border-radius:10px;
+  padding:12px 14px; resize:vertical;
+}
+textarea::placeholder,input::placeholder{color:#A6AFC4}
+textarea:focus,input:focus{background:#fff; border-color:var(--accent-pale)}
+
+.chips{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px}
+.chip{
+  background:var(--surface-2); border:1px solid var(--line); border-radius:999px;
+  padding:7px 14px; font-size:13px; font-weight:600; color:var(--ink-2);
+}
+.chip:hover{background:var(--accent-soft); border-color:var(--accent-pale); color:var(--accent)}
+
+/* ---------- aperçu ---------- */
+.preview{position:sticky; top:calc(env(safe-area-inset-top, 0px) + 96px)}
+.preview h3{font-size:18px; font-weight:700; display:flex; align-items:center; gap:10px}
+.tag{font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:700; color:var(--accent); background:var(--accent-soft); border-radius:999px; padding:4px 10px}
+.out{
+  margin-top:14px; background:var(--surface-2); border:1px solid var(--line); border-radius:12px;
+  padding:18px; font-size:15px; line-height:1.6; color:var(--ink);
+  white-space:pre-wrap; max-height:46vh; overflow:auto; min-width:0;
+}
+.out .ph{color:var(--muted)}
+.out-actions{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap}
+.note{margin-top:14px; font-size:13px; line-height:1.5; color:var(--muted); background:var(--warn-soft); border-radius:10px; padding:12px 14px}
+.note b{color:var(--warn)}
+
+.counter{display:flex; gap:18px; margin-top:16px; flex-wrap:wrap}
+.counter div{display:flex; flex-direction:column}
+.counter .v{font-family:var(--display); font-size:26px; font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums}
+.counter .k{font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:700}
+
+.bar{display:flex; justify-content:space-between; gap:12px; margin-top:22px; flex-wrap:wrap}
+
+/* ---------- mode salle ---------- */
+body.room .col-form,
+body.room .preview,
+body.room .rail{display:none}
+body.room .brief{padding:48px}
+body.room .brief h2{font-size:clamp(38px,6vw,76px)}
+body.room .brief p.say{font-size:clamp(22px,2.6vw,34px)}
+body.room .brief ul{font-size:clamp(20px,2.2vw,30px)}
+body.room .cols{grid-template-columns:minmax(0,1fr)}
+body.room .clock-face{font-size:clamp(46px,6vw,86px); min-width:0}
+
+@media (max-width:900px){
+  .cols{grid-template-columns:minmax(0,1fr)}
+  .preview{position:static}
+  .clock-face{font-size:38px; min-width:128px}
+  .brand h1{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <span class="eyebrow">Atelier 1 · 13 h 00 — 13 h 55</span>
+      <h1>Votre premier assistant de travail</h1>
+    </div>
+    <div class="spacer"></div>
+    <div class="clock">
+      <div>
+        <div class="clock-meta" id="clockLabel">Étape 1 sur 5</div>
+        <div class="clock-face" id="clock">10:00</div>
+      </div>
+      <div class="ctrls">
+        <button class="btn btn-primary" id="startBtn">Démarrer</button>
+        <button class="btn" id="prevBtn">Précédent</button>
+        <button class="btn" id="nextBtn">Étape suivante</button>
+        <button class="btn btn-quiet" id="roomBtn">Mode salle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rail">
+  <div class="rail-in" id="rail"></div>
+</div>
+
+<div class="wrap">
+  <div class="cols">
+    <div class="col-left">
+      <div class="panel brief">
+        <span class="kicker" id="bKicker">Étape 1 · 10 minutes</span>
+        <h2 id="bTitle">Découper la tâche</h2>
+        <p class="say" id="bSay"></p>
+        <ul id="bList"></ul>
+      </div>
+
+      <div class="panel col-form" id="formPanel"></div>
+    </div>
+
+    <div class="col-right">
+      <div class="panel preview">
+        <h3>Votre consigne <span class="tag" id="prevTag">en construction</span></h3>
+        <div class="out" id="out"></div>
+        <div class="out-actions">
+          <button class="btn btn-primary" id="copyBtn">Copier la consigne</button>
+          <button class="btn" id="exampleBtn">Charger l'exemple</button>
+          <button class="btn btn-quiet" id="clearBtn">Vider pour mon cas</button>
+        </div>
+        <div class="counter">
+          <div><span class="v" id="cWords">0</span><span class="k">mots</span></div>
+          <div><span class="v" id="cDocs">0</span><span class="k">documents</span></div>
+          <div><span class="v" id="cFix">0</span><span class="k">corrections</span></div>
+        </div>
+        <div class="note"><b>Avant de la coller dans un outil :</b> retirez les noms de clients et tout ce qui ne doit pas sortir de l'entreprise. Une consigne se partage, les données non.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bar">
+    <button class="btn btn-quiet" id="resetBtn">Réinitialiser l'atelier</button>
+    <span style="font-size:13px;color:var(--muted)">BloomaxDay · Alexandre BETON, intervenant BLOOMAX</span>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var STEPS = [
+    {
+      id: "decouper", n: "Étape 1", t: "Découper la tâche", secs: 600,
+      say: "Écrivez les étapes réelles de la tâche, telles que vous la faites aujourd'hui.",
+      list: [
+        "Une tâche, pas trois. Celle qui vous coûte le plus de temps chaque semaine.",
+        "Numérotez les étapes dans l'ordre où vous les faites vraiment.",
+        "La plupart des échecs viennent d'ici : on demande à l'IA une tâche qu'on n'a jamais formalisée soi-même."
+      ],
+      fields: [
+        { k: "tache", lab: "La tâche", hint: "Une phrase. « Rédiger un devis de dépannage », « Faire le compte rendu d'une réunion de chantier ».", rows: 2 },
+        { k: "etapes", lab: "Les étapes, dans l'ordre", hint: "Une par ligne. Même les évidentes : ce sont souvent celles qu'on oublie de dire.", rows: 7 }
+      ]
+    },
+    {
+      id: "consigne", n: "Étape 2", t: "Écrire la consigne qui tient", secs: 900,
+      say: "Cinq blocs. Tant que les cinq ne sont pas remplis, la consigne ne tient pas.",
+      list: [
+        "Le contexte : qui vous êtes, ce que vous vendez, à qui.",
+        "Le rôle : la place que l'IA occupe dans ce travail.",
+        "Les contraintes : ce qui n'est pas négociable chez vous.",
+        "Le format : la forme exacte de la sortie attendue.",
+        "Les interdits : ce qu'elle doit refuser de faire ou d'inventer."
+      ],
+      fields: [
+        { k: "contexte", lab: "Contexte", hint: "Secteur, taille, zone, type de clients. L'IA ne sait rien de vous tant que vous ne lui avez rien dit.", rows: 3 },
+        { k: "role", lab: "Rôle attendu", hint: "« Tu es mon assistant commercial », « Tu prépares, je valide ».", rows: 2 },
+        { k: "contraintes", lab: "Contraintes non négociables", hint: "Vos conditions, vos délais, votre vocabulaire, votre niveau de langue, la TVA applicable.", rows: 3 },
+        { k: "format", lab: "Format de sortie", hint: "Structure exacte, longueur, titres attendus. Soyez tatillon : c'est ce qui évite les allers-retours.", rows: 3 },
+        { k: "interdits", lab: "Ce qu'elle doit refuser", hint: "Inventer un prix, promettre un délai, citer une référence qu'on ne lui a pas donnée.", rows: 2 }
+      ]
+    },
+    {
+      id: "matiere", n: "Étape 3", t: "Donner la matière", secs: 600,
+      say: "Vos vrais documents. Sans eux, vous obtiendrez la moyenne d'internet.",
+      list: [
+        "Un génie qui a tout lu, mais qui débarque chez vous sans rien savoir de vous.",
+        "Listez les documents que vous allez lui fournir, puis faites le test : une fois sans, une fois avec.",
+        "Retirez ce qui ne doit pas sortir de l'entreprise avant de déposer quoi que ce soit."
+      ],
+      fields: [
+        { k: "docs", lab: "Documents fournis", hint: "Un par ligne. Modèle de devis, trame de compte rendu, conditions générales, plaquette, tarifs.", rows: 6 },
+        { k: "exclus", lab: "Ce que je ne donne pas", hint: "Et pourquoi. C'est la ligne que vous relirez le jour où quelqu'un vous posera la question.", rows: 3 }
+      ]
+    },
+    {
+      id: "corriger", n: "Étape 4", t: "Corriger la consigne", secs: 900,
+      say: "On ne corrige pas le résultat. On corrige la consigne — et on ne le fait qu'une fois.",
+      list: [
+        "Faites produire. Relevez ce qui ne va pas, précisément.",
+        "Pour chaque défaut, écrivez la règle qui l'empêchera de revenir.",
+        "Relancez. Trois tours suffisent presque toujours."
+      ],
+      fields: [
+        { k: "defauts", lab: "Ce qui ne va pas", hint: "Une ligne par défaut constaté. « Trop long », « ton trop familier », « a inventé une référence ».", rows: 5 },
+        { k: "regles", lab: "La règle ajoutée à la consigne", hint: "Une ligne par défaut corrigé. Ces lignes rejoignent la consigne finale.", rows: 5 }
+      ]
+    },
+    {
+      id: "figer", n: "Étape 5", t: "Figer la procédure", secs: 300,
+      say: "Nommez-la et rangez-la. Elle vient d'entrer dans le patrimoine de l'entreprise.",
+      list: [
+        "Un nom que vous retrouverez dans six mois.",
+        "Qui s'en sert, et à quel moment du processus.",
+        "Et le point de contrôle humain : ce qui ne part jamais sans relecture."
+      ],
+      fields: [
+        { k: "nom", lab: "Nom de la procédure", hint: "« Devis dépannage — version 1 ». Datez-la.", rows: 1 },
+        { k: "qui", lab: "Qui l'utilise, et quand", hint: "Si vous êtes seul à savoir qu'elle existe, elle n'existe pas.", rows: 2 },
+        { k: "controle", lab: "Point de contrôle humain", hint: "Tout ce qui porte un prix, un nom, une date ou un engagement passe par vous.", rows: 2 }
+      ]
+    }
+  ];
+
+  var EXAMPLE = {
+    tache: "Rédiger un devis de dépannage après une visite sur site.",
+    etapes: "1. Relire mes notes de visite\n2. Retrouver un devis comparable dans mes archives\n3. Chiffrer main-d'oeuvre et fournitures\n4. Rédiger le descriptif des travaux\n5. Ajouter conditions et délai de validité\n6. Relire et envoyer",
+    contexte: "Entreprise de second oeuvre, 6 salariés, basée dans l'ouest de La Réunion. Clients : particuliers et petites copropriétés. Interventions de dépannage et petits chantiers.",
+    role: "Tu prépares le devis à partir de mes notes de visite. Je chiffre et je valide. Tu ne décides jamais d'un prix.",
+    contraintes: "Vouvoiement, phrases courtes, pas de jargon technique. TVA 8,5 %. Validité du devis : 30 jours. Déplacement facturé à part. Délai annoncé uniquement s'il figure dans mes notes.",
+    format: "1) Objet en une ligne — 2) Descriptif des travaux poste par poste — 3) Tableau quantité / unité / prix unitaire laissé à compléter — 4) Conditions et délai de validité. Une page maximum.",
+    interdits: "Ne jamais inventer un prix, une quantité, une marque de matériel ou un délai. Si l'information manque dans mes notes, écrire « à compléter » et me le signaler en fin de document.",
+    docs: "Mon dernier devis type\nMes conditions générales de vente\nLa grille de tarifs horaires 2026\nDeux devis réussis des six derniers mois",
+    exclus: "Les coordonnées des clients et les montants déjà facturés : ils ne sortent pas de l'entreprise. Je remplace par « le client » et des montants fictifs pendant l'atelier.",
+    defauts: "Trop long, deux pages au lieu d'une\nTon trop commercial, ça ne me ressemble pas\nA inventé une référence de matériel\nA oublié la mention de validité",
+    regles: "Une page maximum, descriptif en puces\nTon factuel, aucune formule de vente\nAucune référence produit qui ne vienne de mes documents\nLa mention de validité est obligatoire en bas de page",
+    nom: "Devis dépannage — version 1 — octobre 2026",
+    qui: "Moi à la rédaction, mon conducteur de travaux pour les chantiers qu'il visite seul.",
+    controle: "Aucun devis ne part sans que j'aie relu les quantités, les prix et le délai."
+  };
+
+  var KEYS = [];
+  STEPS.forEach(function (s) { s.fields.forEach(function (f) { KEYS.push(f.k); }); });
+
+  var state = { step: 0, running: false, left: STEPS[0].secs, data: {} };
+  KEYS.forEach(function (k) { state.data[k] = ""; });
+
+  var STORE = "atelier-procedure-v1";
+  function save() {
+    try { localStorage.setItem(STORE, JSON.stringify({ step: state.step, left: state.left, data: state.data })); }
+    catch (e) { /* stockage indisponible : l'atelier fonctionne quand même */ }
+  }
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE);
+      if (!raw) return false;
+      var p = JSON.parse(raw);
+      if (!p || typeof p !== "object") return false;
+      if (typeof p.step === "number" && p.step >= 0 && p.step < STEPS.length) state.step = p.step;
+      if (typeof p.left === "number") state.left = p.left;
+      if (p.data && typeof p.data === "object") {
+        KEYS.forEach(function (k) { if (typeof p.data[k] === "string") state.data[k] = p.data[k]; });
+      }
+      return true;
+    } catch (e) { return false; }
+  }
+
+  var el = {
+    rail: document.getElementById("rail"),
+    form: document.getElementById("formPanel"),
+    clock: document.getElementById("clock"),
+    clockLabel: document.getElementById("clockLabel"),
+    bKicker: document.getElementById("bKicker"),
+    bTitle: document.getElementById("bTitle"),
+    bSay: document.getElementById("bSay"),
+    bList: document.getElementById("bList"),
+    out: document.getElementById("out"),
+    prevTag: document.getElementById("prevTag"),
+    cWords: document.getElementById("cWords"),
+    cDocs: document.getElementById("cDocs"),
+    cFix: document.getElementById("cFix")
+  };
+
+  function mmss(s) {
+    var neg = s < 0, a = Math.abs(s);
+    var m = Math.floor(a / 60), r = a % 60;
+    return (neg ? "+" : "") + m + ":" + (r < 10 ? "0" : "") + r;
+  }
+
+  function renderRail() {
+    el.rail.textContent = "";
+    STEPS.forEach(function (s, i) {
+      var b = document.createElement("button");
+      b.className = "step" + (i < state.step ? " done" : "");
+      if (i === state.step) b.setAttribute("aria-current", "step");
+      b.type = "button";
+      var n = document.createElement("span"); n.className = "n"; n.textContent = s.n;
+      var t = document.createElement("span"); t.className = "t"; t.textContent = s.t;
+      var d = document.createElement("span"); d.className = "d"; d.textContent = Math.round(s.secs / 60) + " min";
+      b.appendChild(n); b.appendChild(t); b.appendChild(d);
+      b.addEventListener("click", function () { goto(i); });
+      el.rail.appendChild(b);
+    });
+  }
+
+  function renderBrief() {
+    var s = STEPS[state.step];
+    el.bKicker.textContent = s.n + " · " + Math.round(s.secs / 60) + " minutes";
+    el.bTitle.textContent = s.t;
+    el.bSay.textContent = s.say;
+    el.bList.textContent = "";
+    s.list.forEach(function (li) {
+      var e = document.createElement("li"); e.textContent = li; el.bList.appendChild(e);
+    });
+    el.clockLabel.textContent = "Étape " + (state.step + 1) + " sur " + STEPS.length;
+  }
+
+  function renderForm() {
+    var s = STEPS[state.step];
+    el.form.textContent = "";
+    if (state.step === 1) {
+      var chips = document.createElement("div");
+      chips.className = "chips";
+      [["Dirigeant de TPE", "devis"], ["Salarié administratif", "compte rendu"], ["Commercial", "préparation de rendez-vous"], ["Porteur de projet", "note de présentation"]]
+        .forEach(function (p) {
+          var c = document.createElement("button");
+          c.type = "button"; c.className = "chip"; c.textContent = p[0] + " — " + p[1];
+          c.addEventListener("click", function () {
+            var r = document.getElementById("f-role");
+            if (r) { r.value = "Tu prépares " + (p[1][0] === "p" ? "la " : "le ") + p[1] + ". Je relis et je valide."; r.dispatchEvent(new Event("input")); r.focus(); }
+          });
+          chips.appendChild(c);
+        });
+      el.form.appendChild(chips);
+    }
+    s.fields.forEach(function (f) {
+      var l = document.createElement("label");
+      l.className = "f"; l.setAttribute("for", "f-" + f.k);
+      var lab = document.createElement("span"); lab.className = "lab"; lab.textContent = f.lab;
+      var hint = document.createElement("span"); hint.className = "hint"; hint.textContent = f.hint;
+      var ta = document.createElement("textarea");
+      ta.id = "f-" + f.k; ta.rows = f.rows; ta.value = state.data[f.k] || "";
+      ta.placeholder = "…";
+      ta.addEventListener("input", function () {
+        state.data[f.k] = ta.value; renderOut(); save();
+      });
+      l.appendChild(lab); l.appendChild(hint); l.appendChild(ta);
+      el.form.appendChild(l);
+    });
+  }
+
+  function lines(v) {
+    return (v || "").split("\n").map(function (x) { return x.trim(); }).filter(function (x) { return x.length > 0; });
+  }
+
+  function buildText() {
+    var d = state.data, p = [];
+    if (d.contexte) p.push("CONTEXTE\n" + d.contexte);
+    if (d.role) p.push("TON RÔLE\n" + d.role);
+    if (d.tache) {
+      var t = "LA TÂCHE\n" + d.tache;
+      var st = lines(d.etapes);
+      if (st.length) t += "\n\nÉtapes attendues :\n" + st.map(function (x) { return "- " + x.replace(/^\d+[.)]\s*/, ""); }).join("\n");
+      p.push(t);
+    }
+    var ctr = [];
+    if (d.contraintes) ctr.push(d.contraintes);
+    var rg = lines(d.regles);
+    if (rg.length) ctr.push(rg.map(function (x) { return "- " + x; }).join("\n"));
+    if (ctr.length) p.push("CONTRAINTES\n" + ctr.join("\n"));
+    if (d.format) p.push("FORMAT DE SORTIE\n" + d.format);
+    if (d.interdits) p.push("CE QUE TU REFUSES DE FAIRE\n" + d.interdits);
+    var dc = lines(d.docs);
+    if (dc.length) p.push("DOCUMENTS FOURNIS\n" + dc.map(function (x) { return "- " + x; }).join("\n") + "\nTu t'appuies sur ces documents et sur rien d'autre.");
+    if (d.controle) p.push("CONTRÔLE HUMAIN\n" + d.controle);
+    var head = d.nom ? "PROCÉDURE : " + d.nom + "\n\n" : "";
+    return head + p.join("\n\n");
+  }
+
+  function renderOut() {
+    var txt = buildText();
+    el.out.textContent = "";
+    if (!txt.trim()) {
+      var ph = document.createElement("span");
+      ph.className = "ph";
+      ph.textContent = "Remplissez les champs à gauche : la consigne se construit ici, bloc après bloc.";
+      el.out.appendChild(ph);
+    } else {
+      el.out.textContent = txt;
+    }
+    var words = txt.trim() ? txt.trim().split(/\s+/).length : 0;
+    el.cWords.textContent = words;
+    el.cDocs.textContent = lines(state.data.docs).length;
+    el.cFix.textContent = lines(state.data.regles).length;
+    var filled = ["contexte", "role", "contraintes", "format", "interdits"].filter(function (k) { return (state.data[k] || "").trim(); }).length;
+    el.prevTag.textContent = filled === 5 ? "les 5 blocs sont là" : filled + " bloc" + (filled > 1 ? "s" : "") + " sur 5";
+  }
+
+  function renderClock() {
+    el.clock.textContent = mmss(state.left);
+    if (state.left < 0) el.clock.classList.add("over"); else el.clock.classList.remove("over");
+    document.getElementById("startBtn").textContent = state.running ? "Pause" : (state.left === STEPS[state.step].secs ? "Démarrer" : "Reprendre");
+  }
+
+  function renderAll() { renderRail(); renderBrief(); renderForm(); renderOut(); renderClock(); }
+
+  function goto(i) {
+    if (i < 0 || i >= STEPS.length) return;
+    state.step = i; state.left = STEPS[i].secs; state.running = false;
+    renderAll(); save();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  setInterval(function () {
+    if (!state.running) return;
+    state.left -= 1;
+    renderClock();
+    if (state.left === 0 || state.left % 15 === 0) save();
+  }, 1000);
+
+  document.getElementById("startBtn").addEventListener("click", function () {
+    state.running = !state.running; renderClock();
+  });
+  document.getElementById("nextBtn").addEventListener("click", function () { goto(state.step + 1); });
+  document.getElementById("prevBtn").addEventListener("click", function () { goto(state.step - 1); });
+  document.getElementById("roomBtn").addEventListener("click", function () {
+    document.body.classList.toggle("room");
+    this.textContent = document.body.classList.contains("room") ? "Quitter le mode salle" : "Mode salle";
+  });
+
+  document.getElementById("copyBtn").addEventListener("click", function () {
+    var btn = this, txt = buildText();
+    if (!txt.trim()) { btn.textContent = "Rien à copier"; setTimeout(function () { btn.textContent = "Copier la consigne"; }, 1600); return; }
+    function fallback() {
+      var r = document.createRange(); r.selectNodeContents(el.out);
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      btn.textContent = "Sélectionné — Ctrl+C";
+      setTimeout(function () { btn.textContent = "Copier la consigne"; }, 2400);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function () {
+        btn.textContent = "Copié";
+        setTimeout(function () { btn.textContent = "Copier la consigne"; }, 1600);
+      }).catch(fallback);
+    } else { fallback(); }
+  });
+
+  document.getElementById("exampleBtn").addEventListener("click", function () {
+    KEYS.forEach(function (k) { state.data[k] = EXAMPLE[k] || ""; });
+    renderForm(); renderOut(); save();
+  });
+
+  var clearBtn = document.getElementById("clearBtn");
+  var clearArmed = false, clearTimer = null;
+  clearBtn.addEventListener("click", function () {
+    if (!clearArmed) {
+      clearArmed = true; clearBtn.textContent = "Confirmer : tout vider";
+      clearTimer = setTimeout(function () { clearArmed = false; clearBtn.textContent = "Vider pour mon cas"; }, 4000);
+      return;
+    }
+    clearTimeout(clearTimer); clearArmed = false; clearBtn.textContent = "Vider pour mon cas";
+    KEYS.forEach(function (k) { state.data[k] = ""; });
+    renderForm(); renderOut(); save();
+  });
+
+  var resetBtn = document.getElementById("resetBtn");
+  var resetArmed = false, resetTimer = null;
+  resetBtn.addEventListener("click", function () {
+    if (!resetArmed) {
+      resetArmed = true; resetBtn.textContent = "Confirmer : revenir à l'étape 1 et tout effacer";
+      resetTimer = setTimeout(function () { resetArmed = false; resetBtn.textContent = "Réinitialiser l'atelier"; }, 4000);
+      return;
+    }
+    clearTimeout(resetTimer); resetArmed = false; resetBtn.textContent = "Réinitialiser l'atelier";
+    KEYS.forEach(function (k) { state.data[k] = ""; });
+    state.step = 0; state.left = STEPS[0].secs; state.running = false;
+    renderAll(); save();
+  });
+
+  if (!load()) { KEYS.forEach(function (k) { state.data[k] = EXAMPLE[k] || ""; }); }
+  renderAll();
+})();
+</script>
+
+</html>

@@ -1,0 +1,541 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recruter Son Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap">
+<style>
+/* Une fiche de poste, pas un prompt. Six sections de dossier de recrutement,
+   un contrat de délégation en trois colonnes, puis la commande d'installation. */
+:root{
+  --bg:#F7F9FD; --surface:#FFFFFF; --surface-2:#EDF1FA; --surface-3:#DCE5F6;
+  --line:#DCE3F1; --line-soft:#E8EDF7;
+  --ink:#27314E; --ink-2:#556080; --muted:#8792AC;
+  --accent:#4E6FB5; --accent-soft:#E7EDFA; --accent-pale:#C9D7F2;
+  --go:#3F7F63; --go-soft:#DFF0E7; --go-line:#BFE0CE;
+  --hold:#9A6B1E; --hold-soft:#F7ECD7; --hold-line:#E7D4AE;
+  --stop:#99505A; --stop-soft:#F6E4E6; --stop-line:#E4C4C9;
+  --display:'Outfit','Trebuchet MS',sans-serif;
+  --body:'Inter','Helvetica Neue',Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg); color:var(--ink-2); font-family:var(--body); font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display); color:var(--ink); margin:0; text-wrap:balance}
+button{font:inherit; font-family:var(--body); cursor:pointer}
+:focus-visible{outline:3px solid var(--accent); outline-offset:2px; border-radius:8px}
+
+.shell{max-width:1020px; margin:0 auto; padding-left:20px; padding-right:20px; padding-block:28px 56px}
+.head{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:20px}
+.eyebrow{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700}
+.head .sig{font-size:12px; color:var(--muted); margin-left:auto}
+
+.card{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:30px}
+@media (max-width:560px){ .card{padding:22px} }
+
+.hero h1{font-size:clamp(30px,6vw,46px); font-weight:800; letter-spacing:-.025em; line-height:1.08}
+.hero h1 span{color:var(--accent)}
+.hero p.lede{font-size:clamp(17px,2.4vw,20px); margin:16px 0 0; max-width:62ch}
+.pill{display:inline-block; background:var(--accent-soft); color:var(--accent); border-radius:999px; padding:6px 14px; font-size:13px; font-weight:700; letter-spacing:.04em; margin-bottom:18px}
+.steps3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:26px}
+@media (max-width:680px){ .steps3{grid-template-columns:minmax(0,1fr)} }
+.s3{background:var(--surface-2); border-radius:12px; padding:18px}
+.s3 b{display:block; font-family:var(--display); color:var(--ink); font-size:17px; margin-bottom:4px}
+.s3 span{font-size:14px; color:var(--ink-2)}
+.cta{display:flex; gap:10px; flex-wrap:wrap; margin-top:26px}
+
+.btn{background:var(--surface); color:var(--ink); border:1px solid var(--line); border-radius:12px; padding:13px 20px; font-weight:600; font-size:15px; text-decoration:none; display:inline-block}
+.btn:hover{background:var(--surface-2)}
+.btn-primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn-primary:hover{background:#3F5E9F}
+.btn-quiet{background:transparent; border-color:transparent; color:var(--ink-2)}
+.btn-quiet:hover{background:var(--surface-2)}
+
+.prog{display:flex; align-items:center; gap:12px; margin-bottom:20px}
+.prog-track{flex:1; height:8px; background:var(--surface-2); border-radius:999px; overflow:hidden; min-width:0}
+.prog-fill{height:100%; width:0; background:var(--accent); border-radius:999px; transition:width .35s ease}
+.prog-n{font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); white-space:nowrap}
+
+.sec .num{font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); font-weight:700}
+.sec h2{font-size:clamp(23px,4vw,31px); font-weight:800; letter-spacing:-.02em; margin-top:8px; line-height:1.15}
+.sec .why{font-size:15px; color:var(--muted); margin:10px 0 0; max-width:62ch}
+
+label.f{display:block; margin-top:20px}
+label.f .lab{display:block; font-size:12px; letter-spacing:.12em; text-transform:uppercase; font-weight:700; color:var(--accent); margin-bottom:5px}
+label.f .hint{display:block; font-size:13.5px; color:var(--muted); margin-bottom:8px; line-height:1.45}
+textarea,input[type=text]{width:100%; font-family:var(--body); font-size:16.5px; line-height:1.6; color:var(--ink);
+  background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:13px 15px; resize:vertical}
+textarea::placeholder,input::placeholder{color:#A6AFC4}
+textarea:focus,input:focus{background:#fff; border-color:var(--accent-pale)}
+
+/* contrat de délégation */
+.contract{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:20px}
+@media (max-width:820px){ .contract{grid-template-columns:minmax(0,1fr)} }
+.col{border-radius:14px; padding:16px; border:1px solid}
+.col.go{background:var(--go-soft); border-color:var(--go-line)}
+.col.hold{background:var(--hold-soft); border-color:var(--hold-line)}
+.col.stop{background:var(--stop-soft); border-color:var(--stop-line)}
+.col h3{font-size:17px; margin-bottom:3px}
+.col.go h3{color:var(--go)} .col.hold h3{color:var(--hold)} .col.stop h3{color:var(--stop)}
+.col p.k{font-size:13px; margin:0 0 10px; color:var(--ink-2)}
+.col textarea{background:#fff}
+
+/* jauge autonomie */
+.auto{margin-top:22px; border-top:1px solid var(--line-soft); padding-top:18px}
+.auto-row{display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+.auto-track{flex:1; min-width:150px; height:10px; background:var(--surface-2); border-radius:999px; overflow:hidden}
+.auto-fill{height:100%; width:0; background:var(--accent-pale); border-radius:999px; transition:width .4s ease, background .4s ease}
+.auto-txt{font-size:14.5px; font-weight:600; color:var(--ink-2)}
+.auto-txt b{color:var(--ink)}
+.flag{margin-top:12px; border-radius:12px; padding:13px 15px; font-size:14px; background:var(--stop-soft); border:1px solid var(--stop-line); color:var(--ink-2)}
+.flag b{color:var(--stop)}
+
+.nav{display:flex; justify-content:space-between; gap:10px; margin-top:26px; flex-wrap:wrap}
+
+/* destinations */
+.dests{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:20px}
+@media (max-width:640px){ .dests{grid-template-columns:minmax(0,1fr)} }
+.dest{text-align:left; background:var(--surface-2); border:1px solid var(--line); border-radius:14px; padding:16px 18px}
+.dest b{display:block; font-family:var(--display); font-size:17px; color:var(--ink); margin-bottom:3px}
+.dest span{font-size:14px; color:var(--ink-2)}
+.dest[aria-pressed="true"]{background:var(--accent-soft); border-color:var(--accent-pale)}
+
+/* résultat */
+.tabs{display:flex; gap:8px; margin-top:20px; flex-wrap:wrap}
+.tab{background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:9px 18px; font-size:14.5px; font-weight:600; color:var(--ink-2)}
+.tab[aria-selected="true"]{background:var(--accent); border-color:var(--accent); color:#fff}
+pre.doc{margin:18px 0 0; background:var(--surface-2); border:1px solid var(--line); border-radius:14px;
+  padding:18px; font-family:var(--body); font-size:14.5px; line-height:1.62; color:var(--ink);
+  white-space:pre-wrap; max-height:54vh; overflow:auto; min-width:0}
+.howto{margin-top:18px; background:var(--surface-3); border-radius:14px; padding:18px 20px}
+.howto h3{font-size:17px; margin-bottom:8px}
+.howto ol{margin:0; padding-left:20px; font-size:15px}
+.howto li{margin-bottom:5px}
+.howto li::marker{color:var(--accent); font-weight:700}
+.warnbox{margin-top:16px; background:var(--hold-soft); border-radius:12px; padding:14px 16px; font-size:14px; color:var(--ink-2)}
+.warnbox b{color:var(--hold)}
+.foot{margin-top:28px; font-size:13px; color:var(--muted); text-align:center}
+</style>
+
+<div class="shell">
+  <div class="head">
+    <span class="eyebrow">BloomaxDay · Déléguer</span>
+    <span class="sig">Alexandre BETON — intervenant BLOOMAX</span>
+  </div>
+
+  <!-- ACCUEIL -->
+  <div class="card hero" id="scrHome">
+    <span class="pill">Vous n'allez pas écrire un prompt</span>
+    <h1>Vous allez rédiger la <span>fiche de poste</span> de votre premier collaborateur numérique.</h1>
+    <p class="lede">Une mission, un périmètre, ce qu'il doit savoir, à qui il rend des comptes, ce qu'il ne fera jamais, et comment on juge son travail dans 90 jours. Exactement ce que vous feriez pour une embauche. À la fin, vous repartez avec la fiche de poste et la commande qui l'installe chez vous.</p>
+    <div class="steps3">
+      <div class="s3"><b>Le poste</b><span>Sa mission, son périmètre, et les documents qui lui tiennent lieu de formation.</span></div>
+      <div class="s3"><b>Le contrat de délégation</b><span>Ce qu'il fait seul, ce qu'il prépare et que vous validez, ce qu'il ne fait jamais.</span></div>
+      <div class="s3"><b>La supervision</b><span>Le point de contrôle, l'indicateur, la revue à 90 jours et le mode dégradé.</span></div>
+    </div>
+    <div class="cta">
+      <button class="btn btn-primary" id="goBtn">Ouvrir le dossier</button>
+      <button class="btn" id="demoBtn">Voir un dossier rempli</button>
+    </div>
+    <div class="warnbox" style="margin-top:24px"><b>Ce que ce n'est pas.</b> Un assistant configuré n'est pas un salarié et n'a aucune responsabilité : c'est vous qui engagez l'entreprise. Rien de ce que vous écrivez ici ne quitte votre navigateur, mais la commande finale, vous la collerez dans un outil en ligne — écrivez « le client » plutôt qu'un nom.</div>
+  </div>
+
+  <!-- SECTIONS -->
+  <div class="card sec" id="scrSec" hidden>
+    <div class="prog">
+      <span class="prog-n" id="progN"></span>
+      <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+    </div>
+    <span class="num" id="sNum"></span>
+    <h2 id="sTitle"></h2>
+    <p class="why" id="sWhy"></p>
+    <div id="sBody"></div>
+    <div class="nav">
+      <button class="btn btn-quiet" id="backBtn">Retour</button>
+      <button class="btn btn-primary" id="nextBtn">Suivant</button>
+    </div>
+  </div>
+
+  <!-- DESTINATION -->
+  <div class="card sec" id="scrDest" hidden>
+    <span class="num">Dernière étape</span>
+    <h2>Où va-t-il vivre ?</h2>
+    <p class="why">Un assistant qui n'est enregistré nulle part n'existe pas : vous le réexpliquerez chaque lundi. Choisissez l'endroit où il sera conservé.</p>
+    <div class="dests" id="dests"></div>
+    <div class="nav">
+      <button class="btn btn-quiet" id="backBtn2">Retour</button>
+      <button class="btn btn-primary" id="buildBtn">Établir le dossier</button>
+    </div>
+  </div>
+
+  <!-- RESULTAT -->
+  <div class="card" id="scrOut" hidden>
+    <span class="num" style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700">Dossier établi</span>
+    <h2 id="outTitle" style="font-size:clamp(25px,4.5vw,33px);font-weight:800;letter-spacing:-.02em;margin-top:8px"></h2>
+    <div class="auto" style="border:0;padding-top:14px">
+      <div class="auto-row">
+        <span class="auto-txt" id="outAuto"></span>
+        <div class="auto-track"><div class="auto-fill" id="outAutoFill"></div></div>
+      </div>
+      <div class="flag" id="outFlag" hidden></div>
+    </div>
+    <div class="tabs">
+      <button class="tab" id="tabFiche" aria-selected="true">La fiche de poste</button>
+      <button class="tab" id="tabCmd" aria-selected="false">La commande à coller</button>
+    </div>
+    <pre class="doc" id="doc"></pre>
+    <div class="cta">
+      <button class="btn btn-primary" id="copyBtn">Copier</button>
+      <a class="btn" id="openLink" href="https://claude.ai/new" target="_blank" rel="noopener">Ouvrir l'outil</a>
+      <button class="btn btn-quiet" id="editBtn">Modifier le dossier</button>
+    </div>
+    <div class="howto">
+      <h3>L'installer, puis le mettre à l'essai</h3>
+      <ol id="howtoList"></ol>
+    </div>
+    <div class="warnbox" id="rgpdBox"></div>
+  </div>
+
+  <p class="foot">Construit pour le BloomaxDay. Vos réponses restent dans votre navigateur.</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SEC = [
+    {
+      n: "Section 1", t: "L'identité du poste",
+      why: "Un assistant qu'on nomme, on s'en sert. Un assistant anonyme reste un onglet ouvert qu'on oublie.",
+      fields: [
+        { k: "nom", lab: "Son nom", hint: "Court, et qui dit ce qu'il fait. « Devis », « Compte rendu », « Veille marchés ».", rows: 1 },
+        { k: "qui", lab: "Pour qui il travaille", hint: "Vous seul, ou toute l'équipe ? C'est ce qui décide du ton et du niveau de détail.", rows: 2 },
+        { k: "activite", lab: "L'entreprise en une phrase", hint: "Ce que vous faites, pour qui, à quelle échelle. Sans ça, il applique les règles de quelqu'un d'autre.", rows: 3 }
+      ]
+    },
+    {
+      n: "Section 2", t: "La mission",
+      why: "Une raison d'être, et deux ou trois tâches. Un poste qui couvre tout ne couvre rien — c'est vrai pour un salarié, c'est vrai ici.",
+      fields: [
+        { k: "mission", lab: "Sa raison d'être, en une phrase", hint: "« Il me fait gagner la demi-journée hebdomadaire que je passe à rédiger des devis. »", rows: 2 },
+        { k: "taches", lab: "Les tâches de son périmètre", hint: "Trois au maximum, une par ligne. Au-delà, il devient flou et vous cessez de l'utiliser.", rows: 4 }
+      ]
+    },
+    {
+      n: "Section 3", t: "Ce qu'il doit savoir",
+      why: "Sa formation. Un collaborateur sans dossiers vous rend la moyenne d'internet — et c'est la seule chose que vos concurrents ont déjà.",
+      fields: [
+        { k: "sources", lab: "Les documents qu'il aura en permanence sous les yeux", hint: "Un par ligne. Modèles, trames, conditions générales, grille de tarifs, deux exemples réussis.", rows: 5 },
+        { k: "exclus", lab: "Ce que vous ne lui donnerez pas", hint: "Et pourquoi. C'est la ligne que vous relirez le jour où quelqu'un vous posera la question.", rows: 3 }
+      ]
+    },
+    {
+      n: "Section 4", t: "Le contrat de délégation", contract: true,
+      why: "Le cœur du dossier. Trois colonnes, et la troisième est la plus importante : c'est elle qui vous protège.",
+      fields: [
+        { k: "seul", lab: "Il fait seul", rows: 5 },
+        { k: "valide", lab: "Il prépare, je valide", rows: 5 },
+        { k: "jamais", lab: "Il ne fait jamais", rows: 5 }
+      ]
+    },
+    {
+      n: "Section 5", t: "Les règles de la maison",
+      why: "Ce qui n'est pas négociable chez vous, et la forme exacte de ce qu'il rend.",
+      fields: [
+        { k: "regles", lab: "Ton, vocabulaire, règles métier, mentions obligatoires", hint: "Vouvoiement, phrases courtes, taux de TVA applicable, durée de validité, ce qu'on ne dit jamais à un client.", rows: 4 },
+        { k: "format", lab: "La forme exacte de ce qu'il rend", hint: "Structure, longueur, titres attendus. Soyez tatillon : c'est ce qui évite les allers-retours.", rows: 4 }
+      ]
+    },
+    {
+      n: "Section 6", t: "La supervision",
+      why: "Un collaborateur sans évaluation dérive. Un assistant aussi — sauf que lui ne vous le dira pas.",
+      fields: [
+        { k: "controle", lab: "Le point de contrôle humain", hint: "Tout ce qui porte un prix, un nom, une date ou un engagement passe par qui, et à quel moment ?", rows: 2 },
+        { k: "indicateur", lab: "Comment vous saurez qu'il sert à quelque chose", hint: "Un seul indicateur, mesurable. Et notez la valeur d'aujourd'hui : sans avant, il n'y a pas d'après.", rows: 2 },
+        { k: "degrade", lab: "Le mode dégradé", hint: "Comment vous faites cette tâche le jour où l'outil est indisponible. Si vous ne savez pas répondre, vous n'avez pas délégué : vous avez transféré une dépendance.", rows: 3 }
+      ]
+    }
+  ];
+
+  var DESTS = [
+    { k: "claude", b: "Claude", s: "Un projet qui garde ses instructions et ses documents.", url: "https://claude.ai/new" },
+    { k: "chatgpt", b: "ChatGPT", s: "Un projet ou un GPT personnalisé, conservé dans votre compte.", url: "https://chatgpt.com/" },
+    { k: "gemini", b: "Gemini", s: "Un Gem : gratuit, illimité, et il garde ses instructions pour toujours.", url: "https://gemini.google.com/" },
+    { k: "code", b: "Un dossier chez vous", s: "Les fichiers de la procédure, versionnés, qui vous appartiennent.", url: "https://claude.ai/code" }
+  ];
+
+  var EX = {
+    nom: "Devis",
+    qui: "Moi, et mon conducteur de travaux pour les chantiers qu'il visite seul.",
+    activite: "Entreprise de second œuvre, 6 salariés, ouest de La Réunion. Clients : particuliers et petites copropriétés.",
+    mission: "Il me rend la demi-journée hebdomadaire que je passe à rédiger des devis de dépannage.",
+    taches: "Rédiger le descriptif des travaux à partir de mes notes de visite\nPréparer le tableau de chiffrage à compléter\nRelancer un devis sans réponse au bout de dix jours",
+    sources: "Mon devis type\nMes conditions générales de vente\nLa grille de tarifs horaires 2026\nDeux devis réussis des six derniers mois",
+    exclus: "Les coordonnées des clients et les montants déjà facturés : ils ne sortent pas de l'entreprise.",
+    seul: "Rédiger le descriptif des travaux\nMettre en forme le document\nPréparer le texte de relance",
+    valide: "Les quantités et les prix unitaires\nLe délai annoncé\nToute mention de garantie",
+    jamais: "Inventer un prix ou une quantité\nEnvoyer quoi que ce soit à un client\nPromettre une date d'intervention\nCiter une référence produit absente de mes documents",
+    regles: "Vouvoiement, phrases courtes, aucun jargon technique. TVA 8,5 %. Validité du devis : 30 jours. Déplacement facturé à part.",
+    format: "1) Objet en une ligne. 2) Descriptif poste par poste. 3) Tableau quantité / unité / prix unitaire à compléter. 4) Conditions et validité. Une page maximum.",
+    controle: "Aucun devis ne part sans que j'aie relu les quantités, les prix et le délai.",
+    indicateur: "Temps entre la visite et l'envoi du devis. Aujourd'hui : 4 jours en moyenne.",
+    degrade: "Je reprends mon devis type dans le dossier Modèles et je le remplis à la main, comme avant. Compter 45 minutes."
+  };
+
+  var KEYS = [];
+  SEC.forEach(function (s) { s.fields.forEach(function (f) { KEYS.push(f.k); }); });
+
+  var state = { i: 0, dest: "claude", tab: "fiche", data: {} };
+  KEYS.forEach(function (k) { state.data[k] = ""; });
+
+  var STORE = "recruter-son-agent-v1";
+  function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
+  function load() {
+    try {
+      var p = JSON.parse(localStorage.getItem(STORE) || "null");
+      if (!p || typeof p !== "object") return;
+      if (p.data) KEYS.forEach(function (k) { if (typeof p.data[k] === "string") state.data[k] = p.data[k]; });
+      if (typeof p.dest === "string") state.dest = p.dest;
+    } catch (e) {}
+  }
+
+  var el = function (id) { return document.getElementById(id); };
+  var scr = { home: el("scrHome"), sec: el("scrSec"), dest: el("scrDest"), out: el("scrOut") };
+  function show(n) { Object.keys(scr).forEach(function (k) { scr[k].hidden = (k !== n); }); window.scrollTo({ top: 0, behavior: "smooth" }); }
+
+  function lines(v) { return (v || "").split("\n").map(function (x) { return x.trim(); }).filter(Boolean); }
+
+  function autonomy() {
+    var a = lines(state.data.seul).length, b = lines(state.data.valide).length, c = lines(state.data.jamais).length;
+    if (a + b + c === 0) return { pct: 0, lvl: "Contrat vide", txt: "tant qu'il n'est pas écrit, il n'y a pas de délégation", warn: null };
+    var pct = Math.round((a * 100 + b * 45) / Math.max(1, a + b + c));
+    var warn = null;
+    if (c === 0) warn = "<b>Aucun interdit.</b> Un assistant sans ligne rouge n'est pas délégable : c'est vous qui porterez ce qu'il écrira. Remplissez la troisième colonne avant d'aller plus loin.";
+    else if (a > 0 && b === 0) warn = "<b>Rien ne passe par vous.</b> Vérifiez qu'aucune des tâches de la première colonne ne porte un prix, un nom, une date ou un engagement.";
+    var lvl, txt;
+    if (pct < 25) { lvl = "Délégation prudente"; txt = "il prépare, vous décidez — c'est le bon départ"; }
+    else if (pct < 55) { lvl = "Délégation équilibrée"; txt = "l'essentiel est préparé, les engagements restent chez vous"; }
+    else if (pct < 80) { lvl = "Délégation avancée"; txt = "assurez-vous que le point de contrôle tient toujours"; }
+    else { lvl = "Délégation très large"; txt = "à ce niveau, le mode dégradé n'est plus une option"; }
+    return { pct: pct, lvl: lvl, txt: txt, warn: warn };
+  }
+
+  function renderAutoInto(txtEl, fillEl, flagEl) {
+    var a = autonomy();
+    fillEl.style.width = Math.max(4, a.pct) + "%";
+    fillEl.style.background = a.pct < 25 ? "#C9D7F2" : a.pct < 55 ? "#8FAAE0" : a.pct < 80 ? "#4E6FB5" : "#9A6B1E";
+    txtEl.innerHTML = "<b>" + a.lvl + "</b> — " + a.txt;
+    if (flagEl) {
+      if (a.warn) { flagEl.innerHTML = a.warn; flagEl.hidden = false; }
+      else { flagEl.hidden = true; }
+    }
+  }
+
+  function renderSec() {
+    var s = SEC[state.i];
+    el("progN").textContent = "Section " + (state.i + 1) + " sur " + SEC.length;
+    el("progFill").style.width = Math.round((state.i / SEC.length) * 100) + "%";
+    el("sNum").textContent = s.n;
+    el("sTitle").textContent = s.t;
+    el("sWhy").textContent = s.why;
+    var body = el("sBody"); body.textContent = "";
+
+    if (s.contract) {
+      var grid = document.createElement("div"); grid.className = "contract";
+      var meta = {
+        seul: { cls: "go", h: "Il fait seul", k: "Rien d'irréversible. Rien qui sorte de l'entreprise." },
+        valide: { cls: "hold", h: "Il prépare, je valide", k: "Tout ce qui porte un prix, un nom, une date." },
+        jamais: { cls: "stop", h: "Il ne fait jamais", k: "Vos lignes rouges. C'est la colonne qui vous protège." }
+      };
+      s.fields.forEach(function (f) {
+        var m = meta[f.k];
+        var col = document.createElement("div"); col.className = "col " + m.cls;
+        var h = document.createElement("h3"); h.textContent = m.h;
+        var k = document.createElement("p"); k.className = "k"; k.textContent = m.k;
+        var ta = document.createElement("textarea");
+        ta.id = "f-" + f.k; ta.rows = f.rows; ta.value = state.data[f.k] || "";
+        ta.placeholder = "Une tâche par ligne";
+        ta.addEventListener("input", function () {
+          state.data[f.k] = ta.value;
+          renderAutoInto(el("autoTxt"), el("autoFill"), el("autoFlag"));
+          save();
+        });
+        col.appendChild(h); col.appendChild(k); col.appendChild(ta);
+        grid.appendChild(col);
+      });
+      body.appendChild(grid);
+
+      var auto = document.createElement("div"); auto.className = "auto";
+      auto.innerHTML = '<div class="auto-row"><span class="auto-txt" id="autoTxt"></span>' +
+        '<div class="auto-track"><div class="auto-fill" id="autoFill"></div></div></div>' +
+        '<div class="flag" id="autoFlag" hidden></div>';
+      body.appendChild(auto);
+      renderAutoInto(el("autoTxt"), el("autoFill"), el("autoFlag"));
+    } else {
+      s.fields.forEach(function (f) {
+        var l = document.createElement("label"); l.className = "f"; l.setAttribute("for", "f-" + f.k);
+        var lab = document.createElement("span"); lab.className = "lab"; lab.textContent = f.lab;
+        var hint = document.createElement("span"); hint.className = "hint"; hint.textContent = f.hint;
+        var ta = document.createElement("textarea");
+        ta.id = "f-" + f.k; ta.rows = f.rows; ta.value = state.data[f.k] || "";
+        ta.addEventListener("input", function () { state.data[f.k] = ta.value; save(); });
+        l.appendChild(lab); l.appendChild(hint); l.appendChild(ta);
+        body.appendChild(l);
+      });
+    }
+
+    el("backBtn").textContent = state.i === 0 ? "Retour à l'accueil" : "Section précédente";
+    el("nextBtn").textContent = state.i === SEC.length - 1 ? "Choisir où il vivra" : "Suivant";
+  }
+
+  function renderDests() {
+    var box = el("dests"); box.textContent = "";
+    DESTS.forEach(function (d) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "dest";
+      b.setAttribute("aria-pressed", state.dest === d.k ? "true" : "false");
+      var t = document.createElement("b"); t.textContent = d.b;
+      var s = document.createElement("span"); s.textContent = d.s;
+      b.appendChild(t); b.appendChild(s);
+      b.addEventListener("click", function () { state.dest = d.k; renderDests(); save(); });
+      box.appendChild(b);
+    });
+  }
+
+  function bl(title, body, bullets) {
+    if (!body || !body.trim()) return "";
+    var v = bullets ? lines(body).map(function (x) { return "- " + x; }).join("\n") : body.trim();
+    return title + "\n" + v + "\n\n";
+  }
+
+  function fiche() {
+    var d = state.data, a = autonomy();
+    var nom = (d.nom || "").trim() || "Assistant";
+    var out = "FICHE DE POSTE — ASSISTANT « " + nom.toUpperCase() + " »\n";
+    out += "Établie le " + new Date().toLocaleDateString("fr-FR") + "\n\n";
+    out += "AVERTISSEMENT\nCet assistant n'est pas un salarié et n'a aucune responsabilité juridique.\nL'entreprise reste engagée par ce qu'elle envoie. Il prépare, un humain décide.\n\n";
+    out += bl("RATTACHEMENT", d.qui);
+    out += bl("CONTEXTE DE L'ENTREPRISE", d.activite);
+    out += bl("RAISON D'ÊTRE DU POSTE", d.mission);
+    out += bl("PÉRIMÈTRE", d.taches, true);
+    out += bl("DOCUMENTS DE RÉFÉRENCE", d.sources, true);
+    out += bl("DOCUMENTS EXCLUS", d.exclus);
+    out += bl("CONTRAT DE DÉLÉGATION — IL FAIT SEUL", d.seul, true);
+    out += bl("CONTRAT DE DÉLÉGATION — IL PRÉPARE, UN HUMAIN VALIDE", d.valide, true);
+    out += bl("CONTRAT DE DÉLÉGATION — IL NE FAIT JAMAIS", d.jamais, true);
+    out += bl("RÈGLES DE LA MAISON", d.regles);
+    out += bl("FORME ATTENDUE DU TRAVAIL RENDU", d.format);
+    out += bl("POINT DE CONTRÔLE HUMAIN", d.controle);
+    out += bl("INDICATEUR ET SITUATION DE DÉPART", d.indicateur);
+    out += bl("MODE DÉGRADÉ", d.degrade);
+    out += "NIVEAU DE DÉLÉGATION\n" + a.lvl + " (" + a.pct + " sur 100).\n\n";
+    out += "REVUE À 90 JOURS\nTrois questions à se poser : l'indicateur a-t-il bougé ? Le point de contrôle\na-t-il été tenu à chaque fois ? Le mode dégradé a-t-il été testé au moins une fois ?\nSi la réponse est non trois fois, le poste est supprimé.";
+    return out;
+  }
+
+  function commande() {
+    var d = state.data;
+    var nom = (d.nom || "").trim() || "Assistant";
+    var head, tail;
+    if (state.dest === "claude") {
+      head = "Je viens de rédiger la fiche de poste d'un assistant que je veux mettre en service. Tu vas l'installer, pas commenter.\n\n" +
+        "Rends-moi : (1) les instructions à coller dans un projet Claude, (2) la liste des documents à y déposer, (3) un artefact qui me sert d'interface pour le faire tourner.\n\n";
+      tail = "\nCommence par les instructions du projet, puis l'artefact, puis les trois tests d'acceptation.";
+    } else if (state.dest === "chatgpt") {
+      head = "Je viens de rédiger la fiche de poste d'un assistant que je veux mettre en service. Tu vas l'installer, pas commenter.\n\n" +
+        "Rends-moi : (1) le texte exact à coller dans les instructions d'un projet ou d'un GPT personnalisé, (2) la liste des fichiers à y joindre, (3) une interface HTML dans le canevas pour le faire tourner.\n\n";
+      tail = "\nTermine en me disant exactement où coller les instructions pour qu'elles soient conservées.";
+    } else if (state.dest === "gemini") {
+      head = "Je viens de rédiger la fiche de poste d'un assistant que je veux mettre en service. Tu vas l'installer, pas commenter.\n\n" +
+        "Rends-moi : (1) le texte exact à coller dans les instructions d'un Gem, (2) la liste des documents à y attacher, (3) trois tests d'acceptation.\n\n";
+      tail = "\nRappelle-moi en une ligne qu'un Gem garde ses instructions mais pas l'historique des conversations.";
+    } else {
+      head = "Je viens de rédiger la fiche de poste d'un assistant que je veux mettre en service. Tu vas l'installer dans ce dossier, pas commenter.\n\n" +
+        "Crée une compétence réutilisable : un SKILL.md avec un en-tête name et description, le corps de la procédure, et un sous-dossier references/ pour mes documents. Lis ce qui existe déjà avant d'écrire.\n\n";
+      tail = "\nÀ la fin, liste les fichiers créés et la commande pour lancer la procédure.";
+    }
+    var rules =
+      "## RÈGLES DE CONSTRUCTION\n" +
+      "- Le contrat de délégation est contraignant. Ce qui figure en « il ne fait jamais » doit apparaître explicitement dans les instructions, en interdiction.\n" +
+      "- Tout ce qui est listé en « il prépare, un humain valide » doit produire une sortie signalée comme à valider, jamais présentée comme finale.\n" +
+      "- N'invente aucun chiffre, nom, délai ni référence. Ce qui manque s'écrit « à compléter » et m'est signalé.\n" +
+      "- Reprends le mode dégradé tel quel : il fait partie de la livraison.\n" +
+      "- Pose-moi au maximum trois questions avant de produire, et seulement si une information indispensable manque.\n" +
+      "- Écris en français, dans le registre décrit, sans jargon d'IA.\n\n" +
+      "## TESTS D'ACCEPTATION\n" +
+      "Donne-moi trois vérifications, formulées en questions fermées, que je ferai passer au premier travail rendu par l'assistant « " + nom + " » avant de l'utiliser pour de vrai.\n";
+    return head + "----- FICHE DE POSTE -----\n\n" + fiche() + "\n\n----- FIN DE LA FICHE -----\n\n" + rules + tail;
+  }
+
+  var HOWTO = {
+    claude: ["Ouvrez une conversation sur claude.ai et collez la commande.", "Créez un projet, collez-y les instructions qu'il vous rend.", "Déposez dans le projet les documents listés dans la fiche.", "Faites-lui traiter un cas réel que vous connaissez déjà : vous saurez immédiatement s'il tient.", "Notez la date : la revue à 90 jours part d'aujourd'hui."],
+    chatgpt: ["Ouvrez une conversation sur chatgpt.com et collez la commande.", "Créez un projet ou un GPT personnalisé, collez-y les instructions.", "Joignez les fichiers listés dans la fiche.", "Faites-lui traiter un cas réel que vous connaissez déjà.", "Notez la date : la revue à 90 jours part d'aujourd'hui."],
+    gemini: ["Ouvrez gemini.google.com et collez la commande.", "Créez un Gem et collez-y les instructions qu'il vous rend.", "Attachez les documents de référence.", "Faites-lui traiter un cas réel que vous connaissez déjà.", "Notez la date : la revue à 90 jours part d'aujourd'hui."],
+    code: ["Ouvrez votre terminal dans le dossier concerné et collez la commande.", "Validez les fichiers proposés avant qu'ils soient écrits.", "Déposez vos documents dans references/.", "Lancez la procédure sur un cas réel.", "Versionnez le dossier : la procédure devient un actif de l'entreprise."]
+  };
+
+  function renderOut() {
+    var d = DESTS.filter(function (x) { return x.k === state.dest; })[0];
+    var nom = (state.data.nom || "").trim() || "Assistant";
+    el("outTitle").textContent = "Assistant « " + nom + " » — dossier prêt pour " + d.b;
+    renderAutoInto(el("outAuto"), el("outAutoFill"), el("outFlag"));
+    el("openLink").href = d.url;
+    el("openLink").textContent = "Ouvrir " + d.b;
+    var ol = el("howtoList"); ol.textContent = "";
+    HOWTO[state.dest].forEach(function (t) { var li = document.createElement("li"); li.textContent = t; ol.appendChild(li); });
+    var touche = lines(state.data.sources).length > 0 || (state.data.activite || "").trim();
+    el("rgpdBox").innerHTML = touche
+      ? "<b>Deux obligations à connaître avant la mise en service.</b> Depuis le 2 août 2026, vous devez pouvoir démontrer que vos collaborateurs ont été formés aux capacités, limites et risques de l'IA, et signaler les contenus générés destinés à vos clients. Et si cet assistant traite des données personnelles, le RGPD s'applique comme pour n'importe quel autre traitement."
+      : "<b>Avant de coller.</b> Un nom de client, un montant réel, un numéro de dossier : remplacez-les. Une fiche de poste se partage, des données non.";
+    renderDoc();
+  }
+
+  function renderDoc() {
+    el("doc").textContent = state.tab === "fiche" ? fiche() : commande();
+    el("tabFiche").setAttribute("aria-selected", state.tab === "fiche" ? "true" : "false");
+    el("tabCmd").setAttribute("aria-selected", state.tab === "cmd" ? "true" : "false");
+    el("copyBtn").textContent = state.tab === "fiche" ? "Copier la fiche" : "Copier la commande";
+  }
+
+  el("tabFiche").addEventListener("click", function () { state.tab = "fiche"; renderDoc(); });
+  el("tabCmd").addEventListener("click", function () { state.tab = "cmd"; renderDoc(); });
+
+  el("goBtn").addEventListener("click", function () { state.i = 0; renderSec(); show("sec"); });
+  el("demoBtn").addEventListener("click", function () {
+    KEYS.forEach(function (k) { state.data[k] = EX[k] || ""; });
+    save(); state.i = 0; renderSec(); show("sec");
+  });
+  el("nextBtn").addEventListener("click", function () {
+    if (state.i < SEC.length - 1) { state.i++; renderSec(); save(); }
+    else { renderDests(); show("dest"); save(); }
+  });
+  el("backBtn").addEventListener("click", function () {
+    if (state.i === 0) show("home"); else { state.i--; renderSec(); }
+  });
+  el("backBtn2").addEventListener("click", function () { state.i = SEC.length - 1; renderSec(); show("sec"); });
+  el("buildBtn").addEventListener("click", function () { state.tab = "fiche"; renderOut(); show("out"); save(); });
+  el("editBtn").addEventListener("click", function () { state.i = 0; renderSec(); show("sec"); });
+
+  el("copyBtn").addEventListener("click", function () {
+    var btn = this, txt = state.tab === "fiche" ? fiche() : commande();
+    var base = btn.textContent;
+    function fallback() {
+      var r = document.createRange(); r.selectNodeContents(el("doc"));
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      btn.textContent = "Sélectionné — Ctrl+C";
+      setTimeout(function () { btn.textContent = base; }, 2600);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(function () {
+        btn.textContent = "Copié";
+        setTimeout(function () { btn.textContent = base; }, 2000);
+      }).catch(fallback);
+    } else { fallback(); }
+  });
+
+  load();
+  renderDests();
+})();
+</script>
+
+</html>
