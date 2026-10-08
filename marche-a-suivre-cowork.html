@@ -25,42 +25,45 @@ pre{background:var(--s2);border:1px solid var(--line);border-radius:12px;padding
 .note{background:var(--s3);border-radius:var(--r);padding:18px 22px;font-size:14px}.note b{color:var(--ink)}
 .foot{margin-top:36px;font-size:13px;color:var(--muted);text-align:center}
 @media(max-width:760px){.three,.grid3{grid-template-columns:1fr}h1{font-size:30px}}
-@media print{body{background:#fff}.card,.note{break-inside:avoid}.copy{display:none}}
+@media print{body{background:#fff;font-size:13px}.wrap{padding:0;max-width:none}.three,.grid3{grid-template-columns:1fr 1fr 1fr!important}.card,.note{break-inside:avoid;page-break-inside:avoid}.copy{display:none}h1{font-size:28px}h2{margin-top:22px}pre{font-size:10.5px}.step p{font-size:13px}.foot{margin-top:18px}}
 </style></head><body>
 <div class="wrap">
 <p class="k">BloomaxDay · marche à suivre · à garder</p>
-<h1>Automatiser une tâche de la semaine avec Cowork, sans écrire une ligne de code</h1>
-<p class="lead">Le cas vu en démonstration : un humain dépose les relevés de compte dans un dossier, chaque lundi la machine met à jour le tableau de bord, fait le pointage avec les factures et pose une question au comptable. Voici comment le reproduire chez vous, avec vos fichiers, en une heure.</p>
+<h1>Automatiser une tâche de la semaine avec Cowork, sans rien installer et sans une ligne de code</h1>
+<p class="lead">Le cas vu en démonstration : un humain dépose les relevés de compte dans un dossier, chaque lundi la machine met à jour le tableau de bord, fait le pointage avec les factures et pose une question au comptable. Voici comment le reproduire chez vous, avec vos fichiers, en une heure — depuis l'application Claude uniquement.</p>
 
 <h2>Le principe : trois pièces, toujours les mêmes</h2>
 <div class="three">
 <div class="card"><p class="n">1</p><h3>Le dépôt</h3><p>Un dossier de votre ordinateur où un humain pose un fichier. Relevé bancaire, facture fournisseur, feuille d'heures, devis signé. Poser le fichier est la seule action humaine.</p></div>
-<div class="card"><p class="n">2</p><h3>Le traitement</h3><p>Un petit programme, écrit par l'IA une fois pour toutes, qui lit le fichier, met à jour un tableau et range le fichier. Il fait toujours la même chose, et on peut le relire.</p></div>
-<div class="card"><p class="n">3</p><h3>La restitution</h3><p>L'IA lance le programme, lit le résultat et vous écrit huit lignes : ce qui a changé, ce qui cloche, la question à poser. Elle ne calcule rien elle-même.</p></div>
+<div class="card"><p class="n">2</p><h3>La règle écrite</h3><p>Un texte en français, que vous gardez dans le dossier, qui dit à Claude quoi lire, quoi vérifier, quoi écrire et quoi ne jamais faire. Votre comptable peut le relire.</p></div>
+<div class="card"><p class="n">3</p><h3>La trace et le résumé</h3><p>Chaque passage écrit une section dans un journal, puis huit lignes pour vous : ce qui a changé, ce qui cloche, la question à poser. Pas de journal, pas de confiance.</p></div>
 </div>
 
 <h2>La marche à suivre</h2>
 <div class="card"><div class="step"><div class="num">1</div><div><h3>Choisissez une tâche qui revient chaque semaine</h3><p>Critères : un fichier arrive régulièrement, on le traite toujours de la même façon, une erreur se corrige facilement. Les relevés de compte cochent les trois cases. La paie ou un devis client, non.</p><p class="tip">Si vous hésitez : la tâche que vous avez notée ce matin dans « Exaspérations ».</p></div></div></div>
-<div class="card"><div class="step"><div class="num">2</div><div><h3>Créez le dossier sur votre ordinateur</h3><p>Un dossier avec trois sous-dossiers : <b>depot</b> (où l'humain pose le fichier), <b>traite</b> (où le programme range ce qu'il a lu) et <b>donnees</b> (le tableau cumulé). Mettez-y aussi les fichiers de référence — pour le pointage, les factures du mois.</p><p class="tip">Ne mettez rien d'autre dans ce dossier : l'IA ne verra que lui.</p></div></div></div>
+<div class="card"><div class="step"><div class="num">2</div><div><h3>Créez le dossier sur votre ordinateur</h3><p>Un dossier avec trois sous-dossiers : <b>depot</b> (où l'humain pose le fichier), <b>traite</b> (où Claude range ce qu'il a lu) et <b>donnees</b> (le tableau cumulé). Mettez-y aussi les fichiers de référence — pour le pointage, les factures du mois.</p><p class="tip">Ne mettez rien d'autre dans ce dossier : l'IA ne verra que lui.</p></div></div></div>
 <div class="card"><div class="step"><div class="num">3</div><div><h3>Ouvrez Cowork sur ce dossier</h3><p>Dans l'application Claude, mode Cowork, ajoutez le dossier que vous venez de créer. À partir de là, Claude travaille dedans avec vos fichiers — pas dans une fenêtre de chat vide.</p><p class="tip">Les intitulés des boutons varient selon la version de l'application ; le geste est toujours « ajouter un dossier ».</p></div></div></div>
-<div class="card"><div class="step"><div class="num">4</div><div><h3>Faites écrire le programme de traitement</h3><p>Décrivez à Claude ce qui arrive dans le dépôt, ce que doit contenir le tableau, et ce qu'il doit ranger. Exigez quatre choses : un programme relisible, un test sur un vrai fichier, zéro doublon si on dépose deux fois le même fichier, et un fichier <b>journal</b> qui raconte chaque passage. Une commande prête à adapter :</p>
-<pre id="p1">Dans ce dossier, écris un programme Python « traiter.py » qui :
-1. lit chaque fichier déposé dans depot/ (PDF ou CSV de relevé bancaire),
-2. ajoute les lignes à donnees/operations.csv sans jamais créer de doublon (même date, même libellé, même montant = déjà connu),
-3. rapproche les factures de factures/factures.csv avec les lignes de banque (par numéro de facture dans le libellé, sinon par montant et nom du tiers) et écrit donnees/pointage.csv avec un statut : lettrée / écart de montant / en attente,
-4. régénère tableau-de-bord.html (flux par mois, solde, où part l'argent, pointage, points à vérifier),
-5. ajoute une section datée dans journal.md,
-6. déplace les fichiers lus dans traite/.
-Teste-le sur le fichier présent dans depot/, montre-moi le journal, puis dépose le même fichier une deuxième fois et prouve-moi qu'aucune ligne n'est comptée deux fois. N'invente aucune règle métier : si un libellé est ambigu, classe-le « à qualifier ».</pre>
+<div class="card"><div class="step"><div class="num">4</div><div><h3>Faites construire la base, une fois</h3><p>Déposez un premier relevé (le <b>CSV exporté de votre banque</b> de préférence : il se lit sans erreur ; le PDF sert de secours) et demandez à Claude de créer le livre des opérations, le tableau de bord et le journal. Exigez une chose : qu'il prouve ses totaux avant d'écrire.</p>
+<pre id="p1">Dans ce dossier, à partir du relevé présent dans depot/ :
+1. crée donnees/operations.csv avec une ligne par opération (date ; libellé ; débit ; crédit ; solde ; fichier source) ;
+2. calcule le total des crédits, le total des débits et le solde de fin de mois, puis vérifie l'égalité de contrôle : solde de fin − solde de début = crédits − débits. Si ça ne tombe pas juste au centime, recompte avant d'écrire quoi que ce soit ;
+3. crée tableau-de-bord.html : quatre chiffres clés (encaissements, décaissements, dernier solde, factures lettrées), un bloc par mois, une liste « à vérifier », un tableau de pointage factures ↔ banque, et une section « dernière mise à jour ». Mets des commentaires HTML qui expliquent quoi changer à chaque mise à jour ;
+4. crée journal.md avec une première section datée ;
+5. déplace le relevé lu dans traite/.
+N'invente aucune règle métier : si un libellé est ambigu, classe-le « à qualifier ». Montre-moi les totaux et le résultat du contrôle avant de conclure.</pre>
 <button class="copy" data-t="p1">Copier cette commande</button></div></div></div>
-<div class="card"><div class="step"><div class="num">5</div><div><h3>Vérifiez vous-même, une fois</h3><p>Ouvrez le tableau, prenez trois lignes au hasard et retrouvez-les dans le relevé. Déposez un fichier déjà traité : le journal doit dire « 0 nouvelle ligne ». Tant que ces deux contrôles ne passent pas, on n'automatise rien.</p></div></div></div>
-<div class="card"><div class="step"><div class="num">6</div><div><h3>Créez la tâche planifiée</h3><p>Demandez à Claude, dans Cowork : « Crée une tâche planifiée chaque lundi à 8 h 10, sur cet ordinateur et ce dossier, avec le prompt suivant ». Le prompt ne demande pas à l'IA de réfléchir aux chiffres : il lui demande de lancer, lire et résumer.</p>
-<pre id="p2">Tu travailles uniquement dans ce dossier. Ne modifie aucun fichier à la main.
-1. Si depot/ ne contient aucun fichier à traiter, écris « Dépôt vide cette semaine » et arrête-toi.
-2. Sinon, lance : python3 traiter.py
-3. Lis la dernière section de journal.md.
-4. Écris-moi 8 lignes maximum : fichiers intégrés, solde et résultat du dernier mois, pointage (lettrées / écarts / en attente avec numéros et montants), les points à vérifier repris mot pour mot, et UNE question à poser au comptable.
-Règles : aucun chiffre qui ne soit pas dans le journal ; si le programme renvoie une erreur, recopie-la et arrête-toi ; ne supprime et ne déplace rien toi-même.</pre>
+<div class="card"><div class="step"><div class="num">5</div><div><h3>Vérifiez vous-même, une fois</h3><p>Ouvrez le tableau, prenez trois lignes au hasard et retrouvez-les dans le relevé. Comparez les totaux du mois avec ceux imprimés sur le relevé de la banque. Tant que ces deux contrôles ne passent pas, on n'automatise rien.</p></div></div></div>
+<div class="card"><div class="step"><div class="num">6</div><div><h3>Créez la tâche planifiée</h3><p>Demandez à Claude, dans Cowork : « Crée une tâche planifiée chaque lundi à 8 h 10, sur cet ordinateur et ce dossier, avec le prompt suivant ». Le prompt est la règle écrite : lire, écarter les doublons, additionner, prouver, pointer, écrire, résumer.</p>
+<pre id="p2">Tu travailles uniquement dans ce dossier. Tu lis et tu écris des fichiers ; tu ne supprimes rien.
+1. Si depot/ ne contient aucun relevé, écris « Dépôt vide cette semaine » et arrête-toi.
+2. Lis chaque relevé déposé (CSV de préférence). Ignore toute ligne déjà présente dans donnees/operations.csv (même date, même libellé, même montant) et compte les doublons ignorés.
+3. Ajoute les nouvelles lignes à donnees/operations.csv.
+4. Calcule crédits, débits et solde de fin du mois intégré, puis vérifie : solde de fin − solde de début = crédits − débits. Si l'égalité ne tombe pas juste, n'écris rien d'autre : note l'écart dans journal.md et arrête-toi.
+5. Pointe les factures de factures/factures.csv contre les lignes de banque (numéro de facture dans le libellé, sinon montant identique chez le même tiers, sinon montant proche) : lettrée / écart de montant / en attente. Mets à jour donnees/pointage.csv.
+6. Relève, en citant date, libellé et montant : un même paiement fait deux fois à moins de 15 jours, un abonnement qui augmente, un virement sans référence ou vers un particulier, un paiement carte un dimanche, une majoration de retard, un solde négatif. Rien d'autre.
+7. Mets à jour tableau-de-bord.html en respectant sa structure, puis ajoute une section datée à journal.md.
+8. Écris-moi 8 lignes maximum : mois intégré, solde et résultat de trésorerie, pointage (numéros, tiers, montants des écarts et des attentes), points à vérifier, et UNE question à poser au comptable. Déplace ensuite les relevés lus dans traite/.
+Règles : aucun chiffre qui ne vienne du relevé ou de tes calculs vérifiés ; aucune suppression ; en cas de doute, arrête-toi et dis-le.</pre>
 <button class="copy" data-t="p2">Copier ce prompt</button>
 <p class="tip">Lancez la tâche une première fois à la main pour la voir tourner. Si votre organisation impose une validation, la tâche s'arrête et attend : c'est voulu.</p></div></div></div>
 <div class="card"><div class="step"><div class="num">7</div><div><h3>Fixez le contrat de délégation avant d'oublier</h3><p>Écrivez les trois colonnes sur une feuille, et gardez-la à côté du dossier.</p>
@@ -69,20 +72,20 @@ Règles : aucun chiffre qui ne soit pas dans le journal ; si le programme renvoi
 <div class="col c2"><b>Il prépare, je valide</b>La liste des écarts et des factures en attente. La question au comptable. Toute relance.</div>
 <div class="col c3"><b>Il ne fait jamais</b>Payer, relancer un client, corriger un chiffre, supprimer un fichier, envoyer quoi que ce soit à l'extérieur.</div>
 </div></div></div></div>
-<div class="card"><div class="step"><div class="num">8</div><div><h3>Dites-le à l'équipe, lundi</h3><p>Une phrase : « À partir de maintenant, les relevés se déposent là, et le tableau se met à jour tout seul le lundi matin. Si le résumé dit quelque chose de faux, dites-le-moi : c'est le programme qu'on corrige, pas le résumé. » Puis montrez le dossier.</p></div></div></div>
+<div class="card"><div class="step"><div class="num">8</div><div><h3>Dites-le à l'équipe, lundi</h3><p>Une phrase : « À partir de maintenant, les relevés se déposent là, et le tableau se met à jour tout seul le lundi matin. Si le résumé dit quelque chose de faux, dites-le-moi : c'est la règle écrite qu'on corrige, pas le résumé. » Puis montrez le dossier.</p></div></div></div>
 
 <h2>Avant de lancer : la liste de contrôle</h2>
 <div class="card"><ul class="check">
 <li>Le dossier ne contient que ce que l'IA doit voir.</li>
-<li>Le programme a été testé sur un vrai fichier, et sur le même fichier déposé deux fois.</li>
+<li>Un premier relevé a été intégré et ses totaux comparés à ceux imprimés par la banque.</li>
 <li>Trois lignes du tableau ont été vérifiées à la main contre le relevé.</li>
-<li>Le prompt de la tâche interdit explicitement d'inventer des chiffres et de supprimer des fichiers.</li>
-<li>Le contrat de délégation (trois colonnes) est écrit.</li>
+<li>Le prompt de la tâche impose l'égalité de contrôle et interdit d'inventer un chiffre ou de supprimer un fichier.</li>
+<li>Le contrat de délégation (trois colonnes) est écrit.</li><li>Le CSV de la banque est le format déposé ; le PDF n'est que le secours.</li>
 <li>Quelqu'un sait comment arrêter la tâche planifiée.</li>
 <li>Les données réelles ne quittent pas votre machine si c'est votre règle : vérifiez où tourne votre IA avant d'y déposer un vrai relevé.</li>
 </ul></div>
 
-<div class="note"><b>Ce que ça change, concrètement.</b> Avant : quelqu'un ouvre le relevé, recopie, pointe, oublie une ligne, et personne ne relit. Après : l'humain dépose, la machine recopie et pointe sans jamais se tromper deux fois de la même façon, l'IA lit et pose la question, le dirigeant décide. Le temps gagné n'est pas le plus important : c'est la relecture qui n'existait pas.</div>
+<div class="note"><b>Ce que ça change, concrètement.</b> Avant : quelqu'un ouvre le relevé, recopie, pointe, oublie une ligne, et personne ne relit. Après : l'humain dépose, Claude recopie, prouve ses totaux, pointe, écrit le journal et pose la question ; le dirigeant décide. Le temps gagné n'est pas le plus important : c'est la relecture qui n'existait pas.</div>
 
 <p class="foot">BloomaxDay — intervention d'Alexandre BETON. La démonstration utilise une société et des relevés inventés. Les outils de la journée : alex97435.github.io/bloomaxday-outils</p>
 </div>
