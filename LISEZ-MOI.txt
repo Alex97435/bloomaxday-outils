@@ -1,2 +1,6 @@
 BloomaxDay — vos outils
-Double-cliquez sur index.html.
+En ligne : https://alex97435.github.io/bloomaxday-outils/
+Formulaire de la salle (tour de table, trois tâches, retour de terrain) : https://forms.gle/nWw2MNVoeGKVVMyo9
+Double-cliquez sur index.html : c'est la page d'accueil, elle ouvre chaque outil.
+Tout fonctionne dans votre navigateur, sans connexion pour la plupart des outils (la veille appels d'offres a besoin d'internet).
+Les dossiers agent-appel-offres et agent-qui-refuse sont pour ceux qui utilisent Claude Code : ouvrez un terminal dans le dossier et lancez `claude`.

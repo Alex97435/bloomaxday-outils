@@ -55,14 +55,15 @@ body.proj .fam .h b{font-size:21px}body.proj .fam .axe{font-size:18px}body.proj 
  <div class="bar"><label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--muted)">Participants <input id="nb" type="number" min="1" max="60" value="20" style="width:70px;padding:8px 10px"></label><button id="bProj">Mode projection</button><button class="hideproj" id="bPrompt">Commande IA</button><button class="hideproj" id="bReset">Vider</button></div>
 </header>
 <div class="grid">
- <div class="panel input"><h2>Saisie</h2><p class="hint">Une phrase par tâche, telle qu'ils la disent. La famille se détecte toute seule ; corrige-la dans la liste de droite si besoin.</p><div id="rows"></div></div>
+ <div class="panel input hideproj" id="pSend"><h2>Envoyer à l'intervenant</h2><p class="hint">Vos tâches partent dans le formulaire de la salle (prénom, entreprise, trois tâches — rien d'autre). Une ligne remplie = un envoi.</p><div class="row" style="grid-template-columns:1fr auto"><input id="sendEse" placeholder="Votre entreprise"><button class="pri" id="bSend">Envoyer mes tâches</button></div><p class="hint" id="sendSt"></p></div>
+<div class="panel input"><h2>Saisie</h2><p class="hint">Une phrase par tâche, telle qu'ils la disent. La famille se détecte toute seule ; corrige-la dans la liste de droite si besoin.</p><div id="rows"></div></div>
  <div>
   <div id="declic"></div>
   <div class="panel"><h2>Les familles</h2><p class="hint">Des dizaines de phrases, six ou sept familles. Pour chacune : par où on commence, et à quel niveau.</p><div id="fams"></div></div>
   <div class="panel sec hideproj" id="pPrompt" style="display:none"><h2>Commande à coller dans l'IA</h2><p class="hint">Pour la restitution approfondie sur le second écran.</p><pre id="prompt"></pre><button class="pri" id="bCopy">Copier la commande</button></div>
  </div>
 </div>
-<p class="foot">Les données restent dans ce navigateur. Rien n'est envoyé nulle part.</p>
+<p class="foot">Les données restent dans ce navigateur. Rien ne part sans que vous cliquiez « Envoyer mes tâches ».</p>
 </div>
 <script>
 const KEY="bloomax-exasp-v2";let N=20;
@@ -104,7 +105,7 @@ if(!Array.isArray(D)||!D.length)D=Array.from({length:N},blank);
 function resize(n){N=Math.max(1,Math.min(60,n|0));while(D.length<N)D.push(blank());D.length=N;document.getElementById("nb").value=N;document.getElementById("subN").textContent=N}
 function save(){try{localStorage.setItem(KEY,JSON.stringify({N,D}))}catch(e){}}
 function esc(s){return String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
-function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"")}
+function norm(s){return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
 function detect(s){const n=norm(s);if(!n.trim())return"";let best="autre",bs=0;for(const f of FAM){let sc=0;for(const k of f.kw){if(n.includes(norm(k)))sc+=k.length}if(sc>bs){bs=sc;best=f.k}}return best}
 const rows=document.getElementById("rows");
 function draw(){rows.innerHTML="";D.forEach((p,i)=>{const d=document.createElement("div");d.className="row";d.innerHTML='<div class="num">'+(i+1)+'</div><input placeholder="Prénom" value="'+esc(p.nom)+'" data-i="'+i+'" data-f="nom">'+[0,1,2].map(j=>'<input placeholder="Tâche '+(j+1)+'" value="'+esc(p.t[j])+'" data-i="'+i+'" data-j="'+j+'">').join("");rows.appendChild(d)})}
@@ -137,6 +138,16 @@ document.getElementById("bCopy").addEventListener("click",e=>{navigator.clipboar
 document.getElementById("bReset").addEventListener("click",()=>{D=Array.from({length:N},blank);save();draw();sync()});
 document.getElementById("nb").addEventListener("change",e=>{resize(+e.target.value);save();draw();sync()});
 resize(N);draw();sync();
+
+const FORM="https://docs.google.com/forms/d/e/1FAIpQLSdmJyQuyQV7DFbmfCvLxWEfsg4LDzJabkYhJlmV29LlIj-k0g/formResponse";
+const ENTRY={moment:"entry.606421761",prenom:"entry.973199762",ese:"entry.1577119556",t1:"entry.28063105",t2:"entry.16850854",t3:"entry.893716715"};
+async function sendRows(){const ese=(document.getElementById("sendEse").value||"").trim();const st=document.getElementById("sendSt");const rowsOk=D.filter(p=>(p.nom||"").trim()&&p.t.some(t=>t.trim()));
+ if(!ese){st.textContent="Indique ton entreprise.";return}if(!rowsOk.length){st.textContent="Remplis au moins un prénom et une tâche.";return}
+ const b=document.getElementById("bSend");b.disabled=true;st.textContent="Envoi…";let n=0;
+ for(const p of rowsOk){const fd=new FormData();fd.append(ENTRY.moment,"Vos trois tâches");fd.append(ENTRY.prenom,p.nom.trim());fd.append(ENTRY.ese,ese);fd.append(ENTRY.t1,p.t[0]||"");fd.append(ENTRY.t2,p.t[1]||"");fd.append(ENTRY.t3,p.t[2]||"");
+  try{await fetch(FORM,{method:"POST",mode:"no-cors",body:fd});n++}catch(e){}}
+ st.textContent=n?"Envoyé ("+n+" ligne"+(n>1?"s":"")+"). Merci — ça s'affiche dans la salle.":"Échec d'envoi : vérifie la connexion, ou utilise le formulaire au tableau.";b.disabled=false}
+document.getElementById("bSend").addEventListener("click",sendRows);
 </script>
 
 </html>
