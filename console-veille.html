@@ -42,8 +42,8 @@ pre{background:var(--s2);border:1px solid var(--line);border-radius:11px;padding
  <div class="bar"><button id="bDemo">Mode hors ligne (exemples fictifs)</button><button id="bJson">Exporter JSON</button></div>
 </header>
 <div class="ctl">
- <div><label>Mots recherchés (plein texte)</label><input id="q" value='"formation" or "formateur"'></div>
- <div><label>Depuis (jours)</label><input id="days" type="number" value="45" min="1" max="365"></div>
+ <div><label>Mots recherchés dans l'objet (séparés par des virgules)</label><input id="q" value="formation, formateur, formations"></div>
+ <div><label>Depuis (jours)</label><input id="days" type="number" value="90" min="1" max="365"></div>
  <div><label>Zone</label><select id="zone"><option value="all">Toute la France</option><option value="prio" selected>Zones prioritaires du profil</option></select></div>
  <div><label>Score minimum</label><input id="min" type="number" value="3" min="0" max="30"></div>
  <div><button class="pri" id="bGo">Lancer la veille</button></div>
@@ -69,7 +69,7 @@ const DEMO=[
 ];
 let RES=[];
 const $=id=>document.getElementById(id);
-const norm=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+const norm=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
 function pick(r,names){for(const n of names){if(r[n]!=null&&r[n]!=="")return r[n]}for(const k of Object.keys(r)){const kk=k.toLowerCase();if(names.some(n=>kk.includes(n)))return r[k]}return""}
 function toStr(v){return Array.isArray(v)?v.join(", "):(typeof v==="object"&&v?JSON.stringify(v):String(v||""))}
 function normalize(raw){const r=raw.record?raw.record.fields||raw.record:(raw.fields||raw);return{
@@ -98,17 +98,20 @@ function openPrompt(a){const t="Tu es l'analyste appels d'offres d'un organisme 
 $("mclose").addEventListener("click",()=>$("modal").classList.remove("on"));
 $("mcopy").addEventListener("click",e=>{navigator.clipboard.writeText($("mpre").textContent).then(()=>{e.target.textContent="Copié";setTimeout(()=>e.target.textContent="Copier",1500)}).catch(()=>{e.target.textContent="Sélectionne et Cmd+C"})});
 async function run(){const b=$("bGo");b.disabled=true;$("st").innerHTML="Interrogation du BOAMP…";RES=[];
- try{const q=$("q").value.trim()||'"formation"';const days=+$("days").value||45;const since=new Date(Date.now()-days*86400000).toISOString().slice(0,10);
+ try{const terms=($("q").value||"formation").split(/[,;]|\s+or\s+/i).map(t=>t.replace(/["']/g,"").trim()).filter(Boolean);const days=+$("days").value||90;const since=new Date(Date.now()-days*86400000).toISOString().slice(0,10);
+  const tq="("+terms.map(t=>'search(objet,"'+t+'") or search(descripteur_libelle,"'+t+'")').join(" or ")+")";
+  let w=tq+" and dateparution >= date'"+since+"' and nature_libelle = \"Avis de marché\"";
+  if($("zone").value==="prio"){const codes=PROFIL.zones.filter(z=>/^\d{2,3}$/.test(z));if(codes.length)w+=" and ("+codes.map(c=>'code_departement = "'+c+'"').join(" or ")+")"}
   let got=[],offset=0,pages=0;
-  while(pages<4){const u=API+"?where="+encodeURIComponent(q)+"&limit=100&offset="+offset;const r=await fetch(u,{headers:{"Accept":"application/json"}});
+  while(pages<5){const u=API+"?where="+encodeURIComponent(w)+"&order_by="+encodeURIComponent("dateparution desc")+"&limit=100&offset="+offset;const r=await fetch(u,{headers:{"Accept":"application/json"}});
    if(!r.ok){const tx=await r.text();throw new Error("HTTP "+r.status+" — "+tx.slice(0,300))}
    const j=await r.json();const rows=j.results||j.records||[];got=got.concat(rows);if(rows.length<100)break;offset+=100;pages++}
-  RES=got.map(normalize).filter(a=>!a.parution||a.parution>=since).filter(a=>!norm(a.typeAvis).includes("attribution")&&!norm(a.typeAvis).includes("rectificatif"));
-  $("st").innerHTML="<b>"+got.length+"</b> avis reçus du BOAMP, <b>"+RES.length+"</b> parus depuis le "+since+" (hors attributions). Source : BOAMP, données ouvertes."}
+  RES=got.map(normalize);
+  $("st").innerHTML="<b>"+RES.length+"</b> avis de marché parus depuis le "+since+" contenant « "+terms.join(" », « ")+" »"+($("zone").value==="prio"?" dans vos zones prioritaires":" en France")+". Source : BOAMP, données ouvertes, en direct."}
  catch(e){$("st").innerHTML="<b>Le BOAMP n'a pas répondu</b> ("+esc(e.message)+"). Vérifie la connexion, ou passe en mode hors ligne : exemples fictifs clairement marqués."}
  render();b.disabled=false}
 $("bGo").addEventListener("click",run);
 $("bDemo").addEventListener("click",()=>{RES=DEMO.map(normalize);$("st").innerHTML="<b>Mode hors ligne.</b> Cinq avis FICTIFS, créés pour la démonstration. Aucun n'existe réellement.";render()});
-["min","zone"].forEach(id=>$(id).addEventListener("change",render));
+$("min").addEventListener("change",render);$("zone").addEventListener("change",()=>{if(RES.length)run()});
 $("bJson").addEventListener("click",()=>{const blob=new Blob([JSON.stringify(RES.map(a=>({...a,raw:undefined,score:score(a)})),null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="veille-ao-formation.json";a.click()});
 </script></body></html>
